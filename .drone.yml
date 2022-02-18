@@ -1,0 +1,6 @@
+steps:
+- name: Frontend
+  image: node
+  commands:
+  - npm ci
+  - npm start
