@@ -12,7 +12,7 @@ steps:
   - name: Build
     image: node:16
     commands:
-      - npm build
+      - npm run build
 
 
   - name: docker  
