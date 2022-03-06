@@ -1,39 +1,26 @@
 kind: pipeline
 type: docker
-name: Pipeline-test
+name: Pipeline-test-create-react-app
 
 steps:
-  - name: Frontend
-    image: node
+  - name: Installation et tests
+    image: node:16
     commands:
       - npm ci
       - npm test
-      - npm start
 
-  - name: Deploy Staging
-    image: node
-    environment:
-      NODE_ENV: staging
+  - name: Build
+    image: node:16
     commands:
-      - npm ci
-      - npm test
-      - npm start
-    when:
-      event:
-      - promote
-      target:
-      - staging
-  
-  - name: Deploy Production
-    image: node
-    environment:
-      NODE_ENV: production
-    commands:
-      - npm ci
-      - npm test
-      - npm start
-    when:
-      event:
-      - promote
-      target:
-      - production
+      - npm build
+
+
+  - name: docker  
+    image: plugins/docker
+    settings:
+      registry: rg.fr-par.scw.cloud/images
+      repo: foo/bar
+      username:
+        from_secret: docker_registry_username
+      password:
+        from_secret: docker_registry_key
