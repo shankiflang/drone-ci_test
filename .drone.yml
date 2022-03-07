@@ -3,16 +3,6 @@ type: docker
 name: Pipeline-test-create-react-app
 
 steps:
-  - name: restore-cache
-    image: drillster/drone-volume-cache
-    restore: true
-    mount:
-      - ./.npm-cache
-      - ./node_modules
-    volumes:
-      - name: cache
-        path: /cache
-
   - name: Installation et tests
     image: node:16
     commands:
@@ -33,11 +23,6 @@ steps:
       repo: rg.fr-par.scw.cloud/images/create-react-app
       tags: [ latest ]
       username:
-        from_secret: docker_registry_username
+        from_secret: DOCKER_REGISTRY_USERNAME
       password:
-        from_secret: docker_registry_key
-
-volumes:
-  - name: cache
-    host:
-      path: /tmp/cache
+        from_secret: DOCKER_REGISTRY_KEY
