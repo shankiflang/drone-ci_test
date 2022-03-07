@@ -38,6 +38,6 @@ steps:
         from_secret: docker_registry_key
 
 volumes:
-- name: cache
-  host:
-    path: /tmp/cache
+  - name: cache
+    host:
+      path: /tmp/cache
