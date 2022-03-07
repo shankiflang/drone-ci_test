@@ -30,7 +30,7 @@ steps:
     image: plugins/docker
     settings:
       registry: rg.fr-par.scw.cloud/images
-      repo: foo/bar
+      repo: rg.fr-par.scw.cloud/images/create-react-app
       auto_tag: true
       username:
         from_secret: docker_registry_username
