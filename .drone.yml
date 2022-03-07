@@ -11,7 +11,7 @@ steps:
       - ./node_modules
     volumes:
       - name: cache
-        path: /tmp/cache
+        path: /cache
 
   - name: Installation et tests
     image: node:16
@@ -31,8 +31,13 @@ steps:
     settings:
       registry: rg.fr-par.scw.cloud/images
       repo: rg.fr-par.scw.cloud/images/create-react-app
-      auto_tag: true
+      tags: [ latest ]
       username:
         from_secret: docker_registry_username
       password:
         from_secret: docker_registry_key
+
+volumes:
+- name: cache
+  host:
+    path: /tmp/cache
