@@ -10,7 +10,8 @@ steps:
       - ./.npm-cache
       - ./node_modules
     volumes:
-      - /tmp/cache:/cache
+      - name: cache
+        path: /tmp/cache
 
   - name: Installation et tests
     image: node:16
