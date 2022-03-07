@@ -3,10 +3,21 @@ type: docker
 name: Pipeline-test-create-react-app
 
 steps:
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    restore: true
+    mount:
+      - ./.npm-cache
+      - ./node_modules
+    volumes:
+      - /tmp/cache:/cache
+
   - name: Installation et tests
     image: node:16
     commands:
-      - npm ci
+      - npm config set cache .npm-cache
+      - npm ci --silent
+      - npm install react-scripts@3.4.1 -g --silent
       - npm test
 
   - name: Build
@@ -14,12 +25,12 @@ steps:
     commands:
       - npm run build
 
-
-  - name: docker  
+  - name: Publish  
     image: plugins/docker
     settings:
       registry: rg.fr-par.scw.cloud/images
       repo: foo/bar
+      auto_tag: true
       username:
         from_secret: docker_registry_username
       password:
