@@ -60,7 +60,7 @@ steps:
     image: appleboy/drone-telegram
     settings:
       token: 
-        from_secret: DOCKER_REGISTRY_USERNAME
+        from_secret: TELEGRAM_BOT_TOKEN
       to: 90540506
       message: >
         {{#success build.status}}
