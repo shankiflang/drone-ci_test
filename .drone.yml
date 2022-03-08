@@ -12,6 +12,8 @@ steps:
     volumes:
       - name: cache
         path: /cache
+    depends_on:
+      - clone
 
   - name: install
     image: node:16
@@ -22,16 +24,22 @@ steps:
       - npm config set cache .npm-cache
       - npm ci --silent
       - npm install react-scripts@3.4.1 -g --silent
+    depends_on:
+      - restore-cache
 
   - name: tests
     image: node:16
     commands:
       - npm test
+    depends_on:
+      - install
 
   - name: build
     image: node:16
     commands:
       - npm run build
+    depends_on:
+      - tests
 
   - name: publish dev
     image: plugins/docker
@@ -63,7 +71,7 @@ steps:
     depends_on:
       - build
 
-  - name: send telegram notification
+  - name: send telegram
     image: appleboy/drone-telegram
     settings:
       token: 
@@ -76,6 +84,9 @@ steps:
         {{else}}
           build {{build.number}} failed. Fix me please.
         {{/success}}
+    depends_on:
+      - publish dev
+      - publish prod
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
@@ -86,6 +97,8 @@ steps:
     volumes:
       - name: cache
         path: /cache
+    depends_on:
+      - send telegram
 
 volumes:
   - name: cache
