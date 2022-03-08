@@ -20,8 +20,10 @@ steps:
     commands:
       - npm run build
 
-  - name: publish  
+  - name: publish dev
     image: plugins/docker
+    environment:
+      NODE_ENV: development
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
@@ -31,8 +33,10 @@ steps:
       password:
         from_secret: DOCKER_REGISTRY_PASS
 
-  - name: publish  
+  - name: publish prod
     image: plugins/docker
+    environment:
+      NODE_ENV: production
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
