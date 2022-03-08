@@ -9,16 +9,22 @@ steps:
       - npm config set cache .npm-cache
       - npm ci --silent
       - npm install react-scripts@3.4.1 -g --silent
+    depends_on:
+      - clone
 
   - name: tests
     image: node:16
     commands:
       - npm test
+    depends_on:
+      - install
 
   - name: build
     image: node:16
     commands:
       - npm run build
+    depends_on:
+      - tests
 
   - name: publish dev
     image: plugins/docker
@@ -32,6 +38,8 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
+    depends_on:
+      - build
 
   - name: publish prod
     image: plugins/docker
@@ -45,6 +53,8 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
+    depends_on:
+      - build
 
   - name: send telegram notification
     image: appleboy/drone-telegram
