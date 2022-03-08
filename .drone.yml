@@ -3,28 +3,35 @@ type: docker
 name: Pipeline-test-create-react-app
 
 steps:
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    settings:
+      restore: true
+      mount:
+        - ./node_modules
+    volumes:
+      - name: cache
+        path: /cache
+
   - name: install
     image: node:16
+    volumes:
+      - name: cache
+        path: /drone/src/node_modules
     commands:
       - npm config set cache .npm-cache
       - npm ci --silent
       - npm install react-scripts@3.4.1 -g --silent
-    depends_on:
-      - clone
 
   - name: tests
     image: node:16
     commands:
       - npm test
-    depends_on:
-      - install
 
   - name: build
     image: node:16
     commands:
       - npm run build
-    depends_on:
-      - tests
 
   - name: publish dev
     image: plugins/docker
@@ -61,13 +68,26 @@ steps:
     settings:
       token: 
         from_secret: TELEGRAM_BOT_TOKEN
-      to: -1001713641176
+      to: 
+        from_secret: TELEGRAM_BOT_CANAL
       message: >
         {{#success build.status}}
           build {{build.number}} succeeded. Good job.
         {{else}}
           build {{build.number}} failed. Fix me please.
         {{/success}}
-    depends_on:
-      - publish dev
-      - publish prod
+
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    settings:
+      rebuild: true
+      mount:
+        - ./node_modules
+    volumes:
+      - name: cache
+        path: /cache
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache
