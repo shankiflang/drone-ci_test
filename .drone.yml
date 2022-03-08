@@ -3,7 +3,7 @@ type: docker
 name: Pipeline-test-create-react-app
 
 steps:
-  - name: restore-cache
+  - name: restore cache
     image: drillster/drone-volume-cache
     settings:
       restore: true
@@ -20,7 +20,7 @@ steps:
     commands:
       - npm ci --silent
     depends_on:
-      - restore-cache
+      - restore cache
 
   - name: tests
     image: node:16
@@ -83,7 +83,7 @@ steps:
       - publish dev
       - publish prod
 
-  - name: rebuild-cache
+  - name: rebuild cache
     image: drillster/drone-volume-cache
     settings:
       rebuild: true
