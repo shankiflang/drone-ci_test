@@ -17,11 +17,7 @@ steps:
 
   - name: install
     image: node:16
-    volumes:
-      - name: cache
-        path: /drone/src/node_modules
     commands:
-      - npm config set cache .npm-cache
       - npm ci --silent
       - npm install react-scripts@3.4.1 -g --silent
     depends_on:
