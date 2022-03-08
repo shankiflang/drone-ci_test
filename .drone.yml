@@ -19,7 +19,6 @@ steps:
     image: node:16
     commands:
       - npm ci --silent
-      - npm install react-scripts@3.4.1 -g --silent
     depends_on:
       - restore-cache
 
