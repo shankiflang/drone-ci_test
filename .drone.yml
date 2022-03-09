@@ -75,6 +75,7 @@ steps:
         from_secret: SSH_KEY
       passphrase: 
         from_secret: SSH_KEY_PASS
+      port: 22
       script:
         - mkdir /root/test
     depends_on:
@@ -94,8 +95,6 @@ steps:
         {{else}}
           build {{build.number}} failed. Fix me please.
         {{/success}}    
-    depends_on:
-      - ssh tests
 
   - name: rebuild cache
     image: drillster/drone-volume-cache
