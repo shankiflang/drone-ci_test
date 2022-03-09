@@ -69,7 +69,7 @@ steps:
   - name: ssh tests
     image: appleboy/drone-ssh
     settings:
-      host: slatsh.com
+      host: 212.47.239.196
       username: root
       key:
         from_secret: SSH_KEY
