@@ -66,6 +66,21 @@ steps:
     depends_on:
       - build
 
+  - name: ssh tests
+    image: appleboy/drone-ssh
+    settings:
+      host: slatsh.com
+      username: root
+      key:
+        from_secret: SSH_KEY
+      passphrase: 
+        from_secret: SSH_KEY_PASS
+      script:
+        - mkdir /root/test
+    depends_on:
+      - publish dev
+      - publish prod
+
   - name: send telegram
     image: appleboy/drone-telegram
     settings:
@@ -78,10 +93,9 @@ steps:
           build {{build.number}} succeeded. Good job.
         {{else}}
           build {{build.number}} failed. Fix me please.
-        {{/success}}
+        {{/success}}    
     depends_on:
-      - publish dev
-      - publish prod
+      - ssh tests
 
   - name: rebuild cache
     image: drillster/drone-volume-cache
