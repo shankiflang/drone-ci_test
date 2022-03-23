@@ -92,7 +92,7 @@ steps:
       - name: cache
         path: /cache
     depends_on:
-      - send telegram
+      - ssh tests
 
 volumes:
   - name: cache
