@@ -82,22 +82,6 @@ steps:
       - publish dev
       - publish prod
 
-  - name: send telegram
-    image: appleboy/drone-telegram
-    settings:
-      token: 
-        from_secret: TELEGRAM_BOT_TOKEN
-      to: 
-        from_secret: TELEGRAM_BOT_CANAL
-      message: >
-        {{#success build.status}}
-          build {{build.number}} succeeded. Good job.
-        {{else}}
-          build {{build.number}} failed. Fix me please.
-        {{/success}}    
-    depends_on:
-      - ssh tests
-
   - name: rebuild cache
     image: drillster/drone-volume-cache
     settings:
@@ -114,3 +98,31 @@ volumes:
   - name: cache
     host:
       path: /tmp/drone/cache
+
+
+---
+kind: pipeline
+name: Notify
+
+steps:
+  - name: send telegram
+    image: appleboy/drone-telegram
+    settings:
+      token: 
+        from_secret: TELEGRAM_BOT_TOKEN
+      to: 
+        from_secret: TELEGRAM_BOT_CANAL
+      message: >
+        {{#success build.status}}
+          build {{build.number}} succeeded. Good job.
+        {{else}}
+          build {{build.number}} failed. Fix me please.
+        {{/success}}    
+
+depends_on:
+- build
+
+trigger:
+  status:
+  - success
+  - failure
