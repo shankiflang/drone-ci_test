@@ -19,6 +19,7 @@ steps:
     image: node:16
     commands:
       - npm ci
+      - ls -la
     depends_on:
       - restore cache
 
