@@ -66,22 +66,6 @@ steps:
     depends_on:
       - build
 
-  - name: ssh tests
-    image: appleboy/drone-ssh
-    settings:
-      host: 212.47.239.196
-      username: root
-      key:
-        from_secret: SSH_KEY
-      passphrase: 
-        from_secret: SSH_KEY_PASS
-      port: 22
-      script:
-        - mkdir /root/test
-    depends_on:
-      - publish dev
-      - publish prod
-
   - name: rebuild cache
     image: drillster/drone-volume-cache
     settings:
@@ -92,7 +76,8 @@ steps:
       - name: cache
         path: /cache
     depends_on:
-      - ssh tests
+      - publish dev
+      - publish prod
 
 volumes:
   - name: cache
@@ -114,11 +99,12 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        {{#success build.status}}
-          build {{build.number}} succeeded. Good job.
-        {{else}}
-          build {{build.number}} failed. Fix me please.
-        {{/success}}    
+        {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}: *{{repo.fullname}}*
+        build: {{build.number}}
+        commit: {{build.branch}}:{{build.commit}}
+        By: {{build.author}}
+        {{build.message}}
+        {{build.link}}
 
 depends_on:
 - Pipeline-test-create-react-app
