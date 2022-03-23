@@ -103,6 +103,9 @@ steps:
 
   - name: publish dev
     image: plugins/docker
+    volumes:
+      - name: cache
+        path: /drone/src
     environment:
       NODE_ENV: development
     settings:
@@ -119,6 +122,9 @@ steps:
 
   - name: publish prod
     image: plugins/docker
+    volumes:
+      - name: cache
+        path: /drone/src
     environment:
       NODE_ENV: production
     settings:
