@@ -71,8 +71,6 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - build
 
   - name: publish prod
     image: plugins/docker
@@ -86,8 +84,6 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - build
 
 depends_on:
 - Build
