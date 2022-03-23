@@ -102,6 +102,7 @@ volumes:
 
 ---
 kind: pipeline
+type: docker
 name: Notify
 
 steps:
