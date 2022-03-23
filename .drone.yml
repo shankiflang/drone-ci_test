@@ -22,6 +22,18 @@ steps:
     depends_on:
       - restore cache
 
+  - name: rebuild cache
+    image: drillster/drone-volume-cache
+    settings:
+      rebuild: true
+      mount:
+        - ./node_modules
+    volumes:
+      - name: cache
+        path: /cache
+    depends_on:
+      - install
+
   - name: tests
     image: node:16
     commands:
@@ -33,6 +45,8 @@ steps:
     image: node:16
     commands:
       - npm run build
+      - ls
+      - pwd
     volumes:
       - name: cache
         path: /build
@@ -48,18 +62,6 @@ steps:
       rebuild: true
       mount:
         - ./build
-    depends_on:
-      - build
-
-  - name: rebuild cache
-    image: drillster/drone-volume-cache
-    settings:
-      rebuild: true
-      mount:
-        - ./node_modules
-    volumes:
-      - name: cache
-        path: /cache
     depends_on:
       - build
 
