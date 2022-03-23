@@ -22,8 +22,6 @@ steps:
         path: /drone/src
     commands:
       - npm ci
-    depends_on:
-      - restore cache
 
   # - name: rebuild cache
   #   image: drillster/drone-volume-cache
@@ -108,7 +106,7 @@ steps:
     commands:
       - ls
       - pwd
-      
+
   - name: publish dev
     image: plugins/docker
     environment:
