@@ -39,6 +39,18 @@ steps:
     depends_on:
       - tests
 
+  - name: caching build
+    image: drillster/drone-volume-cache
+    volumes:
+    - name: build
+      path: /build
+    settings:
+      rebuild: true
+      mount:
+        - ./build
+    depends_on:
+      - build
+
   - name: rebuild cache
     image: drillster/drone-volume-cache
     settings:
@@ -55,6 +67,9 @@ volumes:
   - name: cache
     host:
       path: /tmp/drone/cache
+  - name: build
+    host:
+      path: /tmp/drone/build
 
 ---
 kind: pipeline
@@ -65,13 +80,20 @@ clone:
   disable: true
 
 steps:
+  - name: restore build
+    image: drillster/drone-volume-cache
+    volumes:
+    - name: build
+      path: /build
+    settings:
+      restore: true
+      mount:
+        - ./build
+
   - name: publish dev
     image: plugins/docker
     environment:
       NODE_ENV: development
-    volumes:
-      - name: cache
-        path: /build
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
@@ -86,9 +108,6 @@ steps:
     image: plugins/docker
     environment:
       NODE_ENV: production
-    volumes:
-      - name: cache
-        path: /build
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
@@ -102,10 +121,18 @@ steps:
 depends_on:
 - Build
 
+volumes:
+  - name: build
+    host:
+      path: /tmp/drone/build
+
 ---
 kind: pipeline
 type: docker
 name: Notify
+
+clone:
+  disable: true
 
 steps:
   - name: send telegram
