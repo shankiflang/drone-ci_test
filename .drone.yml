@@ -19,6 +19,8 @@ steps:
     image: node:16
     commands:
       - npm ci
+    depends_on:
+      - restore cache
 
   - name: rebuild cache
     image: drillster/drone-volume-cache
