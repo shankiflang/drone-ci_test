@@ -137,9 +137,9 @@ depends_on:
 - Build
 
 volumes:
-  - name: build
+  - name: cache
     host:
-      path: /tmp/drone/build
+      path: /tmp/drone/cache
 
 ---
 kind: pipeline
