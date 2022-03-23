@@ -62,6 +62,7 @@ steps:
       rebuild: true
       mount:
         - ./build
+        - ./Dockerfile
     depends_on:
       - build
 
@@ -91,6 +92,7 @@ steps:
       restore: true
       mount:
         - ./build
+        - ./Dockerfile
 
   - name: publish dev
     image: plugins/docker
