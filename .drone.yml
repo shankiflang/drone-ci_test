@@ -121,7 +121,7 @@ steps:
         {{/success}}    
 
 depends_on:
-- build
+- Pipeline-test-create-react-app
 
 trigger:
   status:
