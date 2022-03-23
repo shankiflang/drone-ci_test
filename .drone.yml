@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: Pipeline-test-create-react-app
+name: Build
 
 steps:
   - name: restore cache
@@ -36,6 +36,29 @@ steps:
     depends_on:
       - tests
 
+  - name: rebuild cache
+    image: drillster/drone-volume-cache
+    settings:
+      rebuild: true
+      mount:
+        - ./node_modules
+    volumes:
+      - name: cache
+        path: /cache
+    depends_on:
+      - build
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache
+
+---
+kind: pipeline
+type: docker
+name: Publish
+
+steps:
   - name: publish dev
     image: plugins/docker
     environment:
@@ -66,24 +89,8 @@ steps:
     depends_on:
       - build
 
-  - name: rebuild cache
-    image: drillster/drone-volume-cache
-    settings:
-      rebuild: true
-      mount:
-        - ./node_modules
-    volumes:
-      - name: cache
-        path: /cache
-    depends_on:
-      - publish dev
-      - publish prod
-
-volumes:
-  - name: cache
-    host:
-      path: /tmp/drone/cache
-
+depends_on:
+- Build
 
 ---
 kind: pipeline
@@ -107,7 +114,7 @@ steps:
         {{build.link}}
 
 depends_on:
-- Pipeline-test-create-react-app
+- Publish
 
 trigger:
   status:
