@@ -3,34 +3,34 @@ type: docker
 name: Build
 
 steps:
-  # - name: restore cache
-  #   image: drillster/drone-volume-cache
-  #   settings:
-  #     restore: true
-  #     mount:
-  #       - ./node_modules
-  #   volumes:
-  #     - name: cache
-  #       path: /cache
-  #   depends_on:
-  #     - clone
+  - name: restore cache
+    image: drillster/drone-volume-cache
+    settings:
+      restore: true
+      mount:
+        - ./node_modules
+    volumes:
+      - name: cache
+        path: /cache
+    depends_on:
+      - clone
 
   - name: install
     image: node:16
     commands:
       - npm ci
 
-  # - name: rebuild cache
-  #   image: drillster/drone-volume-cache
-  #   settings:
-  #     rebuild: true
-  #     mount:
-  #       - ./node_modules
-  #   volumes:
-  #     - name: cache
-  #       path: /cache
-  #   depends_on:
-  #     - install
+  - name: rebuild cache
+    image: drillster/drone-volume-cache
+    settings:
+      rebuild: true
+      mount:
+        - ./node_modules
+    volumes:
+      - name: cache
+        path: /cache
+    depends_on:
+      - install
 
   - name: tests
     image: node:16
@@ -51,18 +51,18 @@ steps:
     depends_on:
       - tests
 
-  # - name: caching build
-  #   image: drillster/drone-volume-cache
-  #   volumes:
-  #   - name: build
-  #     path: /build
-  #   settings:
-  #     rebuild: true
-  #     mount:
-  #       - ./build
-  #       - ./Dockerfile
-  #   depends_on:
-  #     - build
+  - name: caching build
+    image: drillster/drone-volume-cache
+    settings:
+      rebuild: true
+      mount:
+        - ./build
+        - ./Dockerfile
+    volumes:
+      - name: build
+        path: /build
+    depends_on:
+      - build
 
 volumes:
   - name: cache
@@ -81,31 +81,27 @@ clone:
   disable: true
 
 steps:
-  # - name: restore build
-  #   image: drillster/drone-volume-cache
-  #   settings:
-  #     restore: true
-  #     mount:
-  #       - ./build
-  #       - ./Dockerfile
-  #   volumes:
-  #     - name: build
-  #       path: /build
+  - name: restore build
+    image: drillster/drone-volume-cache
+    settings:
+      restore: true
+      mount:
+        - ./build
+        - ./Dockerfile
+    volumes:
+      - name: build
+        path: /build
 
   - name: build
     image: node:16
-    volumes:
-      - name: cache
-        path: /drone/src
     commands:
       - ls
       - pwd
+    depends_on:
+      - restore build
 
   - name: publish dev
     image: plugins/docker
-    volumes:
-      - name: cache
-        path: /drone/src
     environment:
       NODE_ENV: development
     settings:
@@ -122,9 +118,6 @@ steps:
 
   - name: publish prod
     image: plugins/docker
-    volumes:
-      - name: cache
-        path: /drone/src
     environment:
       NODE_ENV: production
     settings:
@@ -143,9 +136,9 @@ depends_on:
 - Build
 
 volumes:
-  - name: cache
+  - name: build
     host:
-      path: /tmp/drone/cache
+      path: /tmp/drone/build
 
 ---
 kind: pipeline
