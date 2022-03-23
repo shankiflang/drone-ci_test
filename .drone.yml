@@ -33,6 +33,9 @@ steps:
     image: node:16
     commands:
       - npm run build
+    volumes:
+      - name: cache
+        path: /build
     depends_on:
       - tests
 
@@ -58,15 +61,22 @@ kind: pipeline
 type: docker
 name: Publish
 
+clone:
+  disable: true
+
 steps:
   - name: publish dev
     image: plugins/docker
     environment:
       NODE_ENV: development
+    volumes:
+      - name: cache
+        path: /build
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
       tags: [ latest ]
+      cache_from: "rg.fr-par.scw.cloud/agence-public/create-react-app_test:latest"
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
@@ -76,10 +86,14 @@ steps:
     image: plugins/docker
     environment:
       NODE_ENV: production
+    volumes:
+      - name: cache
+        path: /build
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
       tags: [ latest ]
+      cache_from: "rg.fr-par.scw.cloud/agence-public/create-react-app_prod:latest"
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
