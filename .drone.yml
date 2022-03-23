@@ -108,9 +108,7 @@ steps:
     commands:
       - ls
       - pwd
-    depends_on:
-      - restore build
-
+      
   - name: publish dev
     image: plugins/docker
     environment:
