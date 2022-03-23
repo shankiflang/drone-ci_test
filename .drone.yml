@@ -98,9 +98,7 @@ steps:
     image: node:16
     commands:
       - ls
-    volumes:
-      - name: build
-        path: /build
+      - pwd
 
   - name: publish dev
     image: plugins/docker
