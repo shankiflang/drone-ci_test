@@ -18,7 +18,7 @@ steps:
   - name: install
     image: node:16
     commands:
-      - npm ci --silent
+      - npm ci
     depends_on:
       - restore cache
 
