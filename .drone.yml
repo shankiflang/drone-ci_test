@@ -48,7 +48,7 @@ steps:
       - ls
       - pwd
     volumes:
-      - name: cache
+      - name: build
         path: /build
     depends_on:
       - tests
@@ -93,6 +93,14 @@ steps:
       mount:
         - ./build
         - ./Dockerfile
+
+  - name: build
+    image: node:16
+    commands:
+      - ls
+    volumes:
+      - name: build
+        path: /build
 
   - name: publish dev
     image: plugins/docker
