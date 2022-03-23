@@ -50,7 +50,7 @@ steps:
       - npm run build
       - ls
       - pwd
-      - ls /build
+      - ls build
     depends_on:
       - tests
 
@@ -100,7 +100,7 @@ steps:
     commands:
       - ls
       - pwd
-      - ls /build
+      - ls build
     depends_on:
       - restore build
 
