@@ -28,8 +28,6 @@ steps:
     volumes:
       - name: cache
         path: /drone/src/node_modules
-      - name: build
-        path: /drone/src/build
     commands:
       - npm run build
       - ls
@@ -39,6 +37,8 @@ steps:
 
   - name: publish dev
     image: plugins/docker
+    environment: 
+      NODE_TEXT: COUCOU C MWA
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
@@ -54,39 +54,6 @@ volumes:
   - name: cache
     host:
       path: /tmp/drone/node_modules
-  - name: build
-    host:
-      path: /tmp/drone/build
-
----
-kind: pipeline
-type: docker
-name: Publish
-
-steps:
-  - name: publish dev
-    image: plugins/docker
-    volumes:
-      - name: build
-        path: /drone/src/build
-    settings:
-      registry: rg.fr-par.scw.cloud/agence-public
-      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
-      tags: [ latest ]
-      username:
-        from_secret: DOCKER_REGISTRY_USERNAME
-      password:
-        from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - clone
-
-depends_on:
-- Build
-
-volumes:
-  - name: build
-    host:
-      path: /tmp/drone/build
 
 ---
 kind: pipeline
@@ -113,7 +80,7 @@ steps:
         {{build.link}}
 
 depends_on:
-- Publish
+- Build
 
 trigger:
   status:
