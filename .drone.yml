@@ -37,6 +37,19 @@ steps:
     depends_on:
       - tests
 
+  - name: publish dev
+    image: plugins/docker
+    settings:
+      registry: rg.fr-par.scw.cloud/agence-public
+      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
+      tags: [ latest ]
+      username:
+        from_secret: DOCKER_REGISTRY_USERNAME
+      password:
+        from_secret: DOCKER_REGISTRY_PASS
+    depends_on:
+      - build
+
 volumes:
   - name: cache
     host:
