@@ -60,24 +60,6 @@ steps:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
       tags: [ latest ]
-      cache_from: "rg.fr-par.scw.cloud/agence-public/create-react-app_test:latest"
-      username:
-        from_secret: DOCKER_REGISTRY_USERNAME
-      password:
-        from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - clone
-
-  - name: publish prod
-    image: plugins/docker
-    volumes:
-      - name: build
-        path: /drone/src/build
-    settings:
-      registry: rg.fr-par.scw.cloud/agence-public
-      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
-      tags: [ latest ]
-      cache_from: "rg.fr-par.scw.cloud/agence-public/create-react-app_prod:latest"
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
