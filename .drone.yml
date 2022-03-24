@@ -3,18 +3,6 @@ type: docker
 name: Build
 
 steps:
-  # - name: restore cache
-  #   image: drillster/drone-volume-cache
-  #   settings:
-  #     restore: true
-  #     mount:
-  #       - ./node_modules
-  #   volumes:
-  #     - name: cache
-  #       path: /cache
-  #   depends_on:
-  #     - clone
-
   - name: install
     image: node:16
     volumes:
@@ -24,18 +12,6 @@ steps:
       - npm ci
     depends_on:
       - clone
-
-  # - name: rebuild cache
-  #   image: drillster/drone-volume-cache
-  #   settings:
-  #     rebuild: true
-  #     mount:
-  #       - ./node_modules
-  #   volumes:
-  #     - name: cache
-  #       path: /cache
-  #   depends_on:
-  #     - install
 
   - name: tests
     image: node:16
@@ -61,19 +37,6 @@ steps:
     depends_on:
       - tests
 
-  # - name: caching build
-  #   image: drillster/drone-volume-cache
-  #   settings:
-  #     rebuild: true
-  #     mount:
-  #       - ./build
-  #       - ./Dockerfile
-  #   volumes:
-  #     - name: build
-  #       path: /build
-  #   depends_on:
-  #     - build
-
 volumes:
   - name: cache
     host:
@@ -88,32 +51,11 @@ type: docker
 name: Publish
 
 steps:
-  # - name: restore build
-  #   image: drillster/drone-volume-cache
-  #   settings:
-  #     restore: true
-  #     mount:
-  #       - ./build
-  #       - ./Dockerfile
-  #   volumes:
-  #     - name: build
-  #       path: /build
-
-  - name: build
-    image: node:16
-    volumes:
-      - name: build
-        path: /drone/src/build
-    commands:
-      - ls
-
   - name: publish dev
     image: plugins/docker
     volumes:
       - name: build
         path: /drone/src/build
-    environment:
-      NODE_ENV: development
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
@@ -124,17 +66,13 @@ steps:
       password:
         from_secret: DOCKER_REGISTRY_PASS
     depends_on:
-      - build
+      - clone
 
   - name: publish prod
     image: plugins/docker
     volumes:
       - name: build
         path: /drone/src/build
-      - name: build
-        path: /drone/src/build/Dockerfile
-    environment:
-      NODE_ENV: production
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
@@ -145,7 +83,7 @@ steps:
       password:
         from_secret: DOCKER_REGISTRY_PASS
     depends_on:
-      - build
+      - clone
 
 depends_on:
 - Build
