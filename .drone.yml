@@ -53,7 +53,7 @@ steps:
       - name: cache
         path: /drone/src/node_modules
       - name: build
-        path: /drone/src/
+        path: /drone/src/build
     commands:
       - npm run build
       - ls
@@ -86,9 +86,6 @@ volumes:
 kind: pipeline
 type: docker
 name: Publish
-
-clone:
-  disable: true
 
 steps:
   # - name: restore build
