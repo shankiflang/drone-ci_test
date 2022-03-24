@@ -53,7 +53,9 @@ steps:
       - name: cache
         path: /drone/src/node_modules
       - name: build
-        path: /drone/src/build
+        path: /drone/src/build/build
+      - name: build
+        path: /drone/src/build/Dockerfile
     commands:
       - npm run build
       - ls
@@ -134,6 +136,8 @@ steps:
     volumes:
       - name: build
         path: /drone/src/build
+      - name: build
+        path: /drone/src/build/Dockerfile
     environment:
       NODE_ENV: production
     settings:
