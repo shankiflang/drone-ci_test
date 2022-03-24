@@ -53,9 +53,7 @@ steps:
       - name: cache
         path: /drone/src/node_modules
       - name: build
-        path: /drone/src/build
-      - name: build
-        path: /drone/src/Dockerfile
+        path: /drone/src/
     commands:
       - npm run build
       - ls
