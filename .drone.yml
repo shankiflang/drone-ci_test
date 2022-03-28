@@ -12,7 +12,6 @@ steps:
       - npm ci
     depends_on:
       - clone
-
   - name: tests
     image: node:16
     volumes:
@@ -35,6 +34,16 @@ steps:
     depends_on:
       - tests
 
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/node_modules
+
+---
+kind: pipeline
+type: docker
+name: Push to dev
+
   - name: publish dev
     image: plugins/docker
     environment: 
@@ -49,6 +58,12 @@ steps:
         from_secret: DOCKER_REGISTRY_PASS
     depends_on:
       - build
+
+trigger:
+  event:
+  - promote
+  target:
+  - develop
 
 volumes:
   - name: cache
@@ -78,9 +93,6 @@ steps:
         By: {{build.author}}
         {{build.message}}
         {{build.link}}
-
-depends_on:
-- Build
 
 trigger:
   status:
