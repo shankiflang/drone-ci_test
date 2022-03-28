@@ -81,10 +81,12 @@ steps:
         - master
 
 trigger:
+  event:
+    - push
   branch:
-  - develop
-  - staging
-  - master
+    - develop
+    - staging
+    - master
 
 volumes:
   - name: cache
