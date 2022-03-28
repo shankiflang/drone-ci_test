@@ -132,11 +132,7 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}: *{{repo.fullname}}*
-        build: {{build.number}}
-        commit: {{build.branch}}:{{build.commit}}
-        By: {{build.author}}
-        {{build.message}}
+        {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}} - build: {{build.number}}
         {{build.link}}
 
 depends_on:
@@ -150,3 +146,5 @@ trigger:
   status:
     - success
     - failure
+  event: 
+      - push
