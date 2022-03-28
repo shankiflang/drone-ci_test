@@ -13,9 +13,9 @@ steps:
     depends_on:
       - clone
     when:
-      event: 
-       - push
-       - pull_request
+      event:
+        - push
+        - pull_request
 
   - name: tests
     image: node:16
@@ -27,9 +27,8 @@ steps:
     depends_on:
       - install
     when:
-      event: 
-       - push
-       - pull_request
+      event:
+        - pull_request
 
   - name: build
     image: node:16
@@ -41,8 +40,8 @@ steps:
     depends_on:
       - tests
     when:
-      event: 
-       - push
+      event:
+        - push
 
   - name: publish image dev
     image: plugins/docker
@@ -58,9 +57,9 @@ steps:
       - build
     when:
       branch:
-        - develop
-      event: 
-       - push
+        - dev
+      event:
+        - push
 
 #  ADD DEPLOYMENT TO DEV
 
@@ -79,8 +78,8 @@ steps:
     when:
       branch:
         - staging
-      event: 
-       - push
+      event:
+        - push
 
 # ADD DEPLOYMENT TO STAGING
 
@@ -99,14 +98,17 @@ steps:
     when:
       branch:
         - production
-      event: 
-       - push
+      event:
+        - push
 
 trigger:
   branch:
     - develop
     - staging
     - production
+  event: 
+      - push
+      - pull_request
 
 volumes:
   - name: cache
