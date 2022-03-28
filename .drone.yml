@@ -143,6 +143,10 @@ depends_on:
   - Build
 
 trigger:
+  branch:
+    - develop
+    - staging
+    - production
   status:
-  - success
-  - failure
+    - success
+    - failure
