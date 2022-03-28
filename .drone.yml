@@ -34,16 +34,6 @@ steps:
     depends_on:
       - tests
 
-volumes:
-  - name: cache
-    host:
-      path: /tmp/drone/node_modules
-
----
-kind: pipeline
-type: docker
-name: Push to dev
-
   - name: publish dev
     image: plugins/docker
     environment: 
@@ -56,14 +46,11 @@ name: Push to dev
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - build
-
-trigger:
-  event:
-  - promote
-  target:
-  - develop
+    trigger:
+      event:
+      - promote
+      target:
+      - develop
 
 volumes:
   - name: cache
