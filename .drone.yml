@@ -62,7 +62,7 @@ steps:
       branch:
         - staging
 
-  - name: publish image staging
+  - name: publish image prod
     image: plugins/docker
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
