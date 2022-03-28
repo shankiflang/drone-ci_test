@@ -46,7 +46,7 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
-    trigger:
+    when:
       event:
       - promote
       target:
