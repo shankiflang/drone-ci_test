@@ -44,6 +44,8 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
+    depends_on:
+      - build
     when:
       branch:
         - develop
@@ -58,6 +60,8 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
+    depends_on:
+      - build
     when:
       branch:
         - staging
@@ -72,6 +76,8 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
+    depends_on:
+      - build
     when:
       branch:
         - master
