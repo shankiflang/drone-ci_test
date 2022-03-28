@@ -29,8 +29,6 @@ steps:
         path: /drone/src/node_modules
     commands:
       - npm run build
-      - ls
-      - pwd
     depends_on:
       - tests
 
