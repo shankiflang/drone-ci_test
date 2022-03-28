@@ -34,10 +34,8 @@ steps:
     depends_on:
       - tests
 
-  - name: publish dev
+  - name: publish image dev
     image: plugins/docker
-    environment: 
-      NODE_TEXT: COUCOU C MWA
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
@@ -47,10 +45,42 @@ steps:
       password:
         from_secret: DOCKER_REGISTRY_PASS
     when:
-      event:
-      - promote
-      target:
-      - develop
+      branch:
+        - develop
+
+  - name: publish image staging
+    image: plugins/docker
+    settings:
+      registry: rg.fr-par.scw.cloud/agence-public
+      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_staging
+      tags: [ latest ]
+      username:
+        from_secret: DOCKER_REGISTRY_USERNAME
+      password:
+        from_secret: DOCKER_REGISTRY_PASS
+    when:
+      branch:
+        - staging
+
+  - name: publish image staging
+    image: plugins/docker
+    settings:
+      registry: rg.fr-par.scw.cloud/agence-public
+      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
+      tags: [ latest ]
+      username:
+        from_secret: DOCKER_REGISTRY_USERNAME
+      password:
+        from_secret: DOCKER_REGISTRY_PASS
+    when:
+      branch:
+        - master
+
+trigger:
+  branch:
+  - develop
+  - staging
+  - master
 
 volumes:
   - name: cache
@@ -58,6 +88,35 @@ volumes:
       path: /tmp/drone/node_modules
 
 ---
+# kind: pipeline
+# type: docker
+# name: Deploy to production
+
+# steps:
+#   - name: publish dev
+#     image: plugins/docker
+#     environment: 
+#       NODE_TEXT: COUCOU C MWA
+#     settings:
+#       registry: rg.fr-par.scw.cloud/agence-public
+#       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
+#       tags: [ latest ]
+#       username:
+#         from_secret: DOCKER_REGISTRY_USERNAME
+#       password:
+#         from_secret: DOCKER_REGISTRY_PASS
+
+# trigger:
+#   event:
+#   - promote
+#   target:
+#   - develop
+
+# volumes:
+#   - name: cache
+#     host:
+#       path: /tmp/drone/node_modules
+# ---
 kind: pipeline
 type: docker
 name: Notify
@@ -80,6 +139,9 @@ steps:
         By: {{build.author}}
         {{build.message}}
         {{build.link}}
+
+depends_on:
+  - Build
 
 trigger:
   status:
