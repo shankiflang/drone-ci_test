@@ -62,7 +62,7 @@ steps:
       event:
         - push
 
-#  ADD DEPLOYMENT TO DEV
+#  ADD DEPLOYMENT TO DEVELOP
 
   - name: publish image staging
     image: plugins/docker
