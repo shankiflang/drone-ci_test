@@ -7,8 +7,9 @@ steps:
     image: node:16
     volumes:
       - name: cache
-        path: /drone/src/node_modules
+        path: /drone/src/.npm
     commands:
+      - npm set cache .npm
       - npm ci
     depends_on:
       - clone
@@ -19,9 +20,6 @@ steps:
 
   - name: tests
     image: node:16
-    volumes:
-    - name: cache
-      path: /drone/src/node_modules
     commands:
       - npm test
     depends_on:
@@ -32,9 +30,6 @@ steps:
 
   - name: build
     image: node:16
-    volumes:
-      - name: cache
-        path: /drone/src/node_modules
     commands:
       - npm run build
     depends_on:
@@ -80,10 +75,10 @@ trigger:
 volumes:
   - name: cache
     host:
-      path: /tmp/drone/node_modules
+      path: /tmp/drone/cache/npm
   - name: docker
     host:
-      path: /tmp/drone/docker
+      path: /tmp/drone/cache/docker
 ---
 kind: pipeline
 type: docker
