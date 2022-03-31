@@ -48,8 +48,7 @@ steps:
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
-      tags: [ 'latest' ]
-      auto_tag_suffix: dev
+      tags: [ '1-' ]
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
