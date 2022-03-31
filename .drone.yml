@@ -7,8 +7,9 @@ steps:
     image: node:16
     volumes:
       - name: cache
-        path: /drone/src/node_modules
+        path: /drone/src/.npm
     commands:
+      - npm set cache .npm
       - npm ci
     depends_on:
       - clone
@@ -19,9 +20,6 @@ steps:
 
   - name: tests
     image: node:16
-    volumes:
-    - name: cache
-      path: /drone/src/node_modules
     commands:
       - npm test
     depends_on:
@@ -32,9 +30,6 @@ steps:
 
   - name: build
     image: node:16
-    volumes:
-      - name: cache
-        path: /drone/src/node_modules
     commands:
       - npm run build
     depends_on:
@@ -43,64 +38,28 @@ steps:
       event:
         - push
 
-  - name: publish image dev
+  - name: publish image
     image: plugins/docker
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
-      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
-      tags: [ 'latest' ]
-      auto_tag_suffix: dev
+      repo: rg.fr-par.scw.cloud/agence-public/create-react-app
+      tags: ${DRONE_COMMIT_BRANCH}
+      force_tag: true
+      use_cache: true
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
+    volumes:
+      - name: docker
+        path: /var/lib/docker
     depends_on:
       - build
     when:
       branch:
         - develop
-      event:
-        - push
-
-#  ADD DEPLOYMENT TO DEV
-
-  - name: publish image staging
-    image: plugins/docker
-    settings:
-      registry: rg.fr-par.scw.cloud/agence-public
-      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_staging
-      tags: [ 'latest' ]
-      auto_tag_suffix: staging
-      username:
-        from_secret: DOCKER_REGISTRY_USERNAME
-      password:
-        from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - build
-    when:
-      branch:
-        - staging
-      event:
-        - push
-
-# ADD DEPLOYMENT TO STAGING
-
-  - name: publish image prod
-    image: plugins/docker
-    settings:
-      registry: rg.fr-par.scw.cloud/agence-public
-      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
-      tags: [ 'latest' ]
-      auto_tag_suffix: prod
-      username:
-        from_secret: DOCKER_REGISTRY_USERNAME
-      password:
-        from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - build
-    when:
-      branch:
         - production
+        - staging
       event:
         - push
 
@@ -110,14 +69,16 @@ trigger:
     - staging
     - production
   event: 
-      - push
-      - pull_request
+    - push
+    - pull_request
 
 volumes:
   - name: cache
     host:
-      path: /tmp/drone/node_modules
-
+      path: /tmp/drone/cache/npm
+  - name: docker
+    host:
+      path: /tmp/drone/cache/docker
 ---
 kind: pipeline
 type: docker
