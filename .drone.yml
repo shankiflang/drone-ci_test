@@ -47,8 +47,8 @@ steps:
     image: plugins/docker
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
-      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
-      tags: [ '1-' ]
+      repo: rg.fr-par.scw.cloud/agence-public/create-react-app
+      tags: [ 'latest_dev' ]
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
@@ -61,15 +61,14 @@ steps:
       event:
         - push
 
-#  ADD DEPLOYMENT TO DEVELOP
+#  ADD DEPLOYMENT TO DEV
 
   - name: publish image staging
     image: plugins/docker
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_staging
-      tags: [ 'latest' ]
-      auto_tag_suffix: staging
+      tags: [ 'latest_staging' ]
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
@@ -89,8 +88,7 @@ steps:
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
-      tags: [ 'latest' ]
-      auto_tag_suffix: prod
+      tags: [ 'latest_prod' ]
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
