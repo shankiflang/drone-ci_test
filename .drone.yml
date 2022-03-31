@@ -43,61 +43,28 @@ steps:
       event:
         - push
 
-  - name: publish image dev
+  - name: publish image
     image: plugins/docker
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app
-      tags: [ 'latest_dev' ]
+      tags: ${DRONE_COMMIT_BRANCH}
+      force_tag: true
+      use_cache: true
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
+    volumes:
+      - name: docker
+        path: /var/lib/docker
     depends_on:
       - build
     when:
       branch:
         - develop
-      event:
-        - push
-
-#  ADD DEPLOYMENT TO DEV
-
-  - name: publish image staging
-    image: plugins/docker
-    settings:
-      registry: rg.fr-par.scw.cloud/agence-public
-      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_staging
-      tags: [ 'latest_staging' ]
-      username:
-        from_secret: DOCKER_REGISTRY_USERNAME
-      password:
-        from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - build
-    when:
-      branch:
-        - staging
-      event:
-        - push
-
-# ADD DEPLOYMENT TO STAGING
-
-  - name: publish image prod
-    image: plugins/docker
-    settings:
-      registry: rg.fr-par.scw.cloud/agence-public
-      repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
-      tags: [ 'latest_prod' ]
-      username:
-        from_secret: DOCKER_REGISTRY_USERNAME
-      password:
-        from_secret: DOCKER_REGISTRY_PASS
-    depends_on:
-      - build
-    when:
-      branch:
         - production
+        - staging
       event:
         - push
 
@@ -107,14 +74,16 @@ trigger:
     - staging
     - production
   event: 
-      - push
-      - pull_request
+    - push
+    - pull_request
 
 volumes:
   - name: cache
     host:
       path: /tmp/drone/node_modules
-
+  - name: docker
+    host:
+      path: /tmp/drone/docker
 ---
 kind: pipeline
 type: docker
