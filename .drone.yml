@@ -9,8 +9,7 @@ steps:
       - name: cache
         path: /drone/src/.npm
     commands:
-      - npm set cache .npm
-      - npm ci
+      - npm ci --cache .npm
     depends_on:
       - clone
     when:
@@ -45,14 +44,10 @@ steps:
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app
       tags: ${DRONE_COMMIT_BRANCH}
       force_tag: true
-      use_cache: true
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
-    volumes:
-      - name: docker
-        path: /var/lib/docker
     depends_on:
       - build
     when:
@@ -76,9 +71,6 @@ volumes:
   - name: cache
     host:
       path: /tmp/drone/cache/npm
-  - name: docker
-    host:
-      path: /tmp/drone/cache/docker
 ---
 kind: pipeline
 type: docker
