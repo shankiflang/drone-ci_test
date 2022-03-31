@@ -48,7 +48,8 @@ steps:
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_test
-      tags: [ latest ]
+      auto_tag: true
+      auto_tag_suffix: dev
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
@@ -68,7 +69,8 @@ steps:
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_staging
-      tags: [ latest ]
+      auto_tag: true
+      auto_tag_suffix: staging
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
@@ -88,7 +90,8 @@ steps:
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app_prod
-      tags: [ latest ]
+      auto_tag: true
+      auto_tag_suffix: prod
       username:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
@@ -147,4 +150,4 @@ trigger:
     - success
     - failure
   event: 
-      - push
+    - push
