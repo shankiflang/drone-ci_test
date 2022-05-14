@@ -74,6 +74,52 @@ volumes:
 ---
 kind: pipeline
 type: docker
+name: Deploy
+
+  - name: Deploy to ${DRONE_COMMIT_BRANCH}
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 51.15.222.159
+      key:
+        from_secret: SSH_KEY
+      port: 22
+      command_timeout: 2m
+      script:
+        - docker service update --image rg.fr-par.scw.cloud/agence-public/create-react-app:${DRONE_COMMIT_BRANCH} test-drone-ci_nginx-${DRONE_COMMIT_BRANCH}
+    when:
+      branch:
+        - develop
+        - staging
+
+  - name: Deploy to ${DRONE_COMMIT_BRANCH}
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 51.15.222.159
+      key:
+        from_secret: SSH_KEY
+      port: 22
+      command_timeout: 2m
+      script:
+        - docker service update --image rg.fr-par.scw.cloud/agence-public/create-react-app:${DRONE_COMMIT_BRANCH} test-drone-ci_nginx-${DRONE_COMMIT_BRANCH}
+    event:
+      - promote
+    target:
+      - production
+
+depends_on:
+  - Build
+
+trigger:
+  branch:
+    - develop
+    - staging
+  event:
+    - pull_request
+---
+kind: pipeline
+type: docker
 name: Notify
 
 clone:
