@@ -87,6 +87,8 @@ steps:
         - 51.15.222.159
       key:
         from_secret: SSH_KEY
+      passphrase:
+        from_secret: SSH_KEY_PASS
       port: 22
       command_timeout: 2m
       script:
@@ -104,6 +106,8 @@ steps:
         - 51.15.222.159
       key:
         from_secret: SSH_KEY
+      passphrase:
+        from_secret: SSH_KEY_PASS
       port: 22
       command_timeout: 2m
       script:
@@ -121,6 +125,8 @@ steps:
         - 51.15.222.159
       key:
         from_secret: SSH_KEY
+      passphrase:
+        from_secret: SSH_KEY_PASS
       port: 22
       command_timeout: 2m
       script:
@@ -166,6 +172,7 @@ steps:
 
 depends_on:
   - Build
+  - Deploy
 
 trigger:
   branch:
