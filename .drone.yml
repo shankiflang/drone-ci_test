@@ -80,7 +80,7 @@ clone:
   disable: true
 
 steps:
-  - name: Deploy to ${DRONE_COMMIT_BRANCH}
+  - name: Deploy
     image: appleboy/drone-ssh
     settings:
       host:
