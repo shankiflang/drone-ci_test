@@ -80,7 +80,7 @@ clone:
   disable: true
 
 steps:
-  - name: Deploy to develop
+  - name: Deploy
     image: appleboy/drone-ssh
     settings:
       host:
@@ -92,31 +92,13 @@ steps:
       port: 22
       command_timeout: 2m
       script:
-        - docker service update --image rg.fr-par.scw.cloud/agence-public/create-react-app:develop test-drone-ci_nginx-test
-    when:
-      branch:
-        - develop
-    event:
-      - push
-
-  - name: Deploy to staging
-    image: appleboy/drone-ssh
-    settings:
-      host:
-        - 51.15.222.159
-      key:
-        from_secret: SSH_KEY
-      passphrase:
-        from_secret: SSH_KEY_PASS
-      port: 22
-      command_timeout: 2m
-      script:
-        - docker service update --image rg.fr-par.scw.cloud/agence-public/create-react-app:staging test-drone-ci_nginx-staging
+        - docker service update --image rg.fr-par.scw.cloud/agence-public/create-react-app:${DRONE_COMMIT_BRANCH} test-drone-ci_nginx-${DRONE_COMMIT_BRANCH}
     when:
       branch:
         - staging
-    event:
-      - push
+        - develop
+      event:
+        - push
 
   - name: Deploy to production
     image: appleboy/drone-ssh
@@ -134,10 +116,10 @@ steps:
     when:
       branch:
         - production
-    event:
-      - promote
-    target:
-      - production
+      event:
+        - promote
+      target:
+        - production
 
 depends_on:
   - Build
