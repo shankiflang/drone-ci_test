@@ -76,6 +76,10 @@ kind: pipeline
 type: docker
 name: Deploy
 
+clone:
+  disable: true
+  
+steps:
   - name: Deploy to develop
     image: appleboy/drone-ssh
     settings:
