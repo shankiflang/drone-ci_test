@@ -78,7 +78,7 @@ name: Deploy
 
 clone:
   disable: true
-  
+
 steps:
   - name: Deploy to develop
     image: appleboy/drone-ssh
@@ -94,6 +94,8 @@ steps:
     when:
       branch:
         - develop
+    event:
+      - push
 
   - name: Deploy to staging
     image: appleboy/drone-ssh
@@ -109,6 +111,8 @@ steps:
     when:
       branch:
         - staging
+    event:
+      - push
 
   - name: Deploy to production
     image: appleboy/drone-ssh
@@ -138,7 +142,8 @@ trigger:
     - staging
     - production
   event:
-    - pull_request
+    - push
+    - promote
 ---
 kind: pipeline
 type: docker

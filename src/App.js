@@ -10,7 +10,7 @@ function App() {
           Edit <code>src/App.js</code> and save to reload.
         </p>
         <p>
-          { process.env.NODE_TEXT || "YA TOUJOURS PAS DE CACAHUETES" }
+          { process.env.NODE_TEXT || "YA TOUJOURS PAS DE CACAHUETES, MAIS YA LA PROD" }
         </p>
         <a
           className="App-link"
