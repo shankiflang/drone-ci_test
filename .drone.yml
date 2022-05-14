@@ -93,7 +93,6 @@ steps:
 
 depends_on:
   - Build
-  - Deploy
 
 trigger:
   branch:
