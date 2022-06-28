@@ -180,7 +180,7 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        {{#success build.status}}test ✅{{else}}❌{{/success}}
+        {{#success build.status}}test Ok✅{{else}}test Ko❌{{/success}}
 
 trigger:
   ref:
