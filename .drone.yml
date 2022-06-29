@@ -20,31 +20,35 @@ type: docker
 name: Tests
 
 steps:
-  - name: tests
+  - name: tests push
     image: node:16
     commands:
       - npm test
     depends_on:
       - install
+    when:
+      event: 
+        - push
+      branch: 
+        exclude:
+          - develop
+          - staging
+          - production
 
-trigger:
-  ref:
-    include:
-      - refs/pull/*/develop
-      - refs/pull/*/staging
-      - refs/pull/*/production
-      - refs/push/*/*
-    # exclude:
-    #   - refs/push/*/develop
-    #   - refs/push/*/staging
-    #   - refs/push/*/production
-
-
-
-
-
-
-
+  - name: tests pr
+    image: node:16
+    commands:
+      - npm test
+    depends_on:
+      - install
+    when:
+      event: 
+        - pull_request
+      branch: 
+        include:
+          - develop
+          - staging
+          - production
 
 
 
