@@ -200,9 +200,6 @@ steps:
             build: {{build.number}}
             link: {{build.link}}
         Github:
-            author: {{DRONE_COMMIT_AUTHOR}}
-            branch: {{DRONE_COMMIT_AUTHOR}}
-            message: {{DRONE_COMMIT_MESSAGE}}
     when:
       event: 
         - push  
