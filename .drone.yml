@@ -241,10 +241,10 @@ steps:
       event: 
         - promote
 
-depends_on:
-  - Tests
-  - Deploy to ${DRONE_COMMIT_BRANCH}
-  - Create docker image
+# depends_on:
+#   - Tests
+#   - Deploy to ${DRONE_COMMIT_BRANCH}
+#   - Create docker image
 
 trigger:
   status:
