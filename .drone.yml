@@ -8,6 +8,8 @@ steps:
     volumes:
       - name: node_modules
         path: /drone/src/node_modules
+      - name: dockerfile
+        path: /drone/src/Dockerfile
     commands:
       - yarn install --frozen-lockfile
 
@@ -20,7 +22,9 @@ volumes:
   - name: node_modules
     host:
       path: /tmp/drone/cache/node_modules
-
+  - name: dockerfile
+    host:
+      path: /tmp/drone/cache/Dockerfile
 ---
 kind: pipeline
 type: docker
@@ -132,6 +136,8 @@ steps:
         path: /drone/src/build
       - name: docker
         path: /var/run/docker.sock
+      - name: dockerfile
+        path: /drone/src/Dockerfile
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app
@@ -161,6 +167,9 @@ volumes:
   - name: docker
     host:
       path: /var/run/docker.sock
+  - name: dockerfile
+    host:
+      path: /tmp/drone/cache/Dockerfile
 ---
 # ADD PROMOTE PIPELINE HERE
 #---
@@ -223,6 +232,7 @@ steps:
 
 depends_on:
   - Tests Push
+  - Create docker image
 
 trigger:
   status:
