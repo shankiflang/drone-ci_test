@@ -24,8 +24,6 @@ steps:
     image: node:16
     commands:
       - npm test
-    depends_on:
-      - install
     when:
       event: 
         - push
@@ -39,8 +37,6 @@ steps:
     image: node:16
     commands:
       - npm test
-    depends_on:
-      - install
     when:
       event: 
         - pull_request
@@ -50,7 +46,8 @@ steps:
           - staging
           - production
 
-
+depends_on:
+  - Install
 
 
 
