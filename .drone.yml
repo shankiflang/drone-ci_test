@@ -34,10 +34,10 @@ trigger:
       - refs/pull/staging
       - refs/pull/production
       - refs/push/**
-    exclude:
-      - refs/push/develop
-      - refs/push/staging
-      - refs/push/production
+    # exclude:
+    #   - refs/push/develop
+    #   - refs/push/staging
+    #   - refs/push/production
 
 
 
