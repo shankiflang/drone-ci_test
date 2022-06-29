@@ -5,8 +5,11 @@ name: Install
 steps:
   - name: install
     image: node:16
+    volumes:
+      - name: cache
+        path: /drone/src/.npm
     commands:
-      - npm ci
+      - npm ci --cache .npm
     depends_on:
       - clone
 
@@ -14,6 +17,12 @@ trigger:
   event: 
     - push
     - pull_request
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache/npm
+
 ---
 kind: pipeline
 type: docker
@@ -22,8 +31,11 @@ name: Tests
 steps:
   - name: tests push
     image: node:16
+    volumes:
+      - name: cache
+        path: /drone/src/.npm
     commands:
-      - npm test
+      - npm test --cache .npm
     when:
       event: 
         - push
@@ -35,8 +47,11 @@ steps:
 
   - name: tests pr
     image: node:16
+    volumes:
+      - name: cache
+        path: /drone/src/.npm
     commands:
-      - npm test
+      - npm test --cache .npm
     when:
       event: 
         - pull_request
@@ -49,7 +64,10 @@ steps:
 depends_on:
   - Install
 
-
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache/npm
 
 
 
