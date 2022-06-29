@@ -33,6 +33,7 @@ trigger:
       - refs/pull/develop
       - refs/pull/staging
       - refs/pull/production
+      - refs/push/**
     exclude:
       - refs/push/develop
       - refs/push/staging
