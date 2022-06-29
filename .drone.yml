@@ -193,7 +193,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Notify Push Telegram
+name: Notify
 
 clone:
   disable: true
@@ -229,7 +229,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Notify PR Telegram
+name: Notify
 
 clone:
   disable: true
@@ -261,7 +261,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Notify Promote Telegram
+name: Notify
 
 clone:
   disable: true
