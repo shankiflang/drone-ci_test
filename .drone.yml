@@ -185,7 +185,7 @@ clone:
   disable: true
 
 steps:
-  - name: send telegram
+  - name: send push telegram
     image: appleboy/drone-telegram
     settings:
       token: 
@@ -205,7 +205,7 @@ steps:
       event: 
         - push  
 
-  - name: send telegram
+  - name: send pr telegram
     image: appleboy/drone-telegram
     settings:
       token: 
@@ -221,7 +221,7 @@ steps:
       event: 
         - pull_request
 
-  - name: send telegram
+  - name: send promote telegram
     image: appleboy/drone-telegram
     settings:
       token: 
