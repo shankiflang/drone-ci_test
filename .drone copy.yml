@@ -1,124 +1,98 @@
 kind: pipeline
 type: docker
-name: Install
+name: Validate Push
 
 steps:
   - name: install
     image: node:16
     volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
+      - name: cache
+        path: /drone/src/.npm
     commands:
-      - yarn install --frozen-lockfile
+      - npm ci --cache .npm
     depends_on:
       - clone
 
-trigger:
-  event: 
-    - push
-    - pull_request
-
-volumes:
-  - name: node_modules
-    host:
-      path: /tmp/drone/cache/node_modules
-
----
-kind: pipeline
-type: docker
-name: Tests
-
-steps:
-  - name: tests push
+  - name: tests
     image: node:16
-    volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
     commands:
-      - yarn run test
+      - npm test
     depends_on:
-      - clone
-    when:
-      event: 
-        - push
-      branch: 
-        exclude:
-          - develop
-          - staging
-          - production
-
-  - name: tests pull_request
-    image: node:16
-    volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
-    commands:
-      - yarn run test
-    when:
-      event: 
-        - pull_request
-      branch: 
-        include:
-          - develop
-          - staging
-          - production
-
-depends_on:
-  - Install
-
-volumes:
-  - name: node_modules
-    host:
-      path: /tmp/drone/cache/node_modules
----
-kind: pipeline
-type: docker
-name: Build
-
-steps:
-  - name: build
-    image: node:16
-    volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
-      - name: build
-        path: /drone/src/build
-    commands:
-      - yarn run build
+      - install
 
 trigger:
-  event: 
-    - push
-  branch: 
-    include:
+  branch:
+    exclude:
       - develop
       - staging
       - production
-
-depends_on:
-  - Install
+  event: 
+    - push
 
 volumes:
-  - name: node_modules
+  - name: cache
     host:
-      path: /tmp/drone/cache/node_modules  
-  - name: build
-    host:
-      path: /tmp/drone/cache/build
+      path: /tmp/drone/cache/npm
 ---
 kind: pipeline
 type: docker
-name: Create docker image
-
-clone:
-  disable: true
+name: Validate Pull Request
 
 steps:
+  - name: install
+    image: node:16
+    volumes:
+      - name: cache
+        path: /drone/src/.npm
+    commands:
+      - npm ci --cache .npm
+    depends_on:
+      - clone
+
+  - name: tests
+    image: node:16
+    commands:
+      - npm test
+    depends_on:
+      - install
+
+trigger:
+  branch:
+    - develop
+    - staging
+    - production
+  event: 
+    - pull_request
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache/npm
+---
+kind: pipeline
+type: docker
+name: Validate ${DRONE_COMMIT_BRANCH} Push
+
+steps:
+  - name: install
+    image: node:16
+    volumes:
+      - name: cache
+        path: /drone/src/.npm
+    commands:
+      - npm ci --cache .npm
+    depends_on:
+      - clone
+
+  - name: build
+    image: node:16
+    commands:
+      - npm run build
+    depends_on:
+      - install
+
   - name: publish image
     image: plugins/docker
-    volumes:
-      - name: build
-        path: /drone/src/build
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app
@@ -128,26 +102,24 @@ steps:
         from_secret: DOCKER_REGISTRY_USERNAME
       password:
         from_secret: DOCKER_REGISTRY_PASS
+    depends_on:
+      - build
+
+                    # PROMOTE ONLY FOR DEV AND STAGING
 
 trigger:
+  branch:
+    - develop
+    - staging
+    - production
   event: 
-    - push
-  branch: 
-    include:
-      - develop
-      - staging
-      - production
-
-depends_on:
-  - Build
+    - pull_request
 
 volumes:
-  - name: build
+  - name: cache
     host:
-      path: /tmp/drone/cache/build
+      path: /tmp/drone/cache/npm
 ---
-# ADD PROMOTE PIPELINE HERE
-#---
 kind: pipeline
 type: docker
 name: Deploy to ${DRONE_COMMIT_BRANCH}
@@ -172,10 +144,9 @@ steps:
 
 trigger:
   branch:
-    include:
-      - develop
-      - staging
-      - production
+    - develop
+    - staging
+    - production
   event:
     - promote
 ---
@@ -187,7 +158,7 @@ clone:
   disable: true
 
 steps:
-  - name: send push telegram
+  - name: send telegram
     image: appleboy/drone-telegram
     settings:
       token: 
@@ -195,20 +166,19 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        {{#success build.status}}✅{{else}}❌{{/success}} [Push]
-
+        [Push] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}} - 
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
         Github:
-            author: ${DRONE_COMMIT_AUTHOR}
-            branch: ${DRONE_COMMIT_BRANCH}
-            message: ${DRONE_COMMIT_MESSAGE}
+            author: {{DRONE_COMMIT_AUTHOR}}
+            branch: {{DRONE_COMMIT_AUTHOR}}
+            message: {{DRONE_COMMIT_MESSAGE}}
     when:
       event: 
         - push  
 
-  - name: send pr telegram
+  - name: send telegram
     image: appleboy/drone-telegram
     settings:
       token: 
@@ -216,8 +186,7 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        {{#success build.status}}✅{{else}}❌{{/success}} [Pull Request]
-
+        [PullRequest] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
@@ -225,7 +194,7 @@ steps:
       event: 
         - pull_request
 
-  - name: send promote telegram
+  - name: send telegram
     image: appleboy/drone-telegram
     settings:
       token: 
@@ -233,8 +202,7 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        {{#success build.status}}✅{{else}}❌{{/success}} [Promote]
-
+        [Promote] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
@@ -245,9 +213,9 @@ steps:
         - promote
 
 depends_on:
-  - Tests
+  - Validate Push
+  - Validate Pull Request
   - Deploy to ${DRONE_COMMIT_BRANCH}
-  # - Create docker image
 
 trigger:
   status:
