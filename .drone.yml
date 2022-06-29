@@ -52,36 +52,36 @@ volumes:
 #     host:
 #       path: /tmp/drone/cache/node_modules
 # ---
-kind: pipeline
-type: docker
-name: Tests Pull Request
+# kind: pipeline
+# type: docker
+# name: Tests Pull Request
 
-steps:
-  - name: tests pull request
-    image: node:16
-    volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
-    commands:
-      - yarn run test
+# steps:
+#   - name: tests pull request
+#     image: node:16
+#     volumes:
+#       - name: node_modules
+#         path: /drone/src/node_modules
+#     commands:
+#       - yarn run test
 
-trigger:
-  event: 
-    - pull_request
-  branch: 
-    include:
-      - develop
-      - staging
-      - production
+# trigger:
+#   event: 
+#     - pull_request
+#   branch: 
+#     include:
+#       - develop
+#       - staging
+#       - production
 
-depends_on:
-  - Install
+# depends_on:
+#   - Install
 
-volumes:
-  - name: node_modules
-    host:
-      path: /tmp/drone/cache/node_modules
----
+# volumes:
+#   - name: node_modules
+#     host:
+#       path: /tmp/drone/cache/node_modules
+# ---
 kind: pipeline
 type: docker
 name: Build
