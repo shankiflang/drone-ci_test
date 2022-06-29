@@ -288,7 +288,7 @@ steps:
             https://.....fr
 
 depends_on:
-  - Deploy_to_${DRONE_COMMIT_BRANCH}
+  - Deploy to ${DRONE_COMMIT_BRANCH}
 
 trigger:
   status:
