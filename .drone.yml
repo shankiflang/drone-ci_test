@@ -240,6 +240,7 @@ steps:
         - promote
 
 depends_on:
+  - Install
   - Tests
   - Deploy to ${DRONE_COMMIT_BRANCH}
   - Create docker image
