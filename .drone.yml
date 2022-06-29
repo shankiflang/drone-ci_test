@@ -22,36 +22,36 @@ volumes:
       path: /tmp/drone/cache/node_modules
 
 ---
-kind: pipeline
-type: docker
-name: Tests Push
+# kind: pipeline
+# type: docker
+# name: Tests Push
 
-steps:
-  - name: tests push
-    image: node:16
-    volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
-    commands:
-      - yarn run test
+# steps:
+#   - name: tests push
+#     image: node:16
+#     volumes:
+#       - name: node_modules
+#         path: /drone/src/node_modules
+#     commands:
+#       - yarn run test
 
-depends_on:
-  - Install
+# depends_on:
+#   - Install
 
-trigger:
-  event: 
-    - push
-  branch: 
-    exclude:
-      - develop
-      - staging
-      - production
+# trigger:
+#   event: 
+#     - push
+#   branch: 
+#     exclude:
+#       - develop
+#       - staging
+#       - production
 
-volumes:
-  - name: node_modules
-    host:
-      path: /tmp/drone/cache/node_modules
----
+# volumes:
+#   - name: node_modules
+#     host:
+#       path: /tmp/drone/cache/node_modules
+# ---
 kind: pipeline
 type: docker
 name: Tests Pull Request
@@ -130,8 +130,8 @@ steps:
     volumes:
       - name: build
         path: /drone/src/build
-      # - name: docker
-      #   path: /var/run/docker.sock
+      - name: docker
+        path: /var/run/docker.sock
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app
@@ -158,9 +158,9 @@ volumes:
   - name: build
     host:
       path: /tmp/drone/cache/build
-  # - name: docker
-  #   host:
-  #     path: /var/run/docker.sock
+  - name: docker
+    host:
+      path: /var/run/docker.sock
 ---
 # ADD PROMOTE PIPELINE HERE
 #---
