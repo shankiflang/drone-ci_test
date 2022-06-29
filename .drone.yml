@@ -24,7 +24,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: Tests Push
+name: Tests_Push
 
 steps:
   - name: tests push
@@ -54,7 +54,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: Tests Pull Request
+name: Tests_Pull_Request
 
 steps:
   - name: tests pull request
@@ -119,7 +119,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: Create docker image
+name: Create_docker_image
 
 clone:
   disable: true
@@ -166,7 +166,7 @@ volumes:
 #---
 kind: pipeline
 type: docker
-name: Deploy to ${DRONE_COMMIT_BRANCH}
+name: Deploy_to_${DRONE_COMMIT_BRANCH}
 
 clone:
   disable: true
@@ -261,10 +261,10 @@ steps:
         - promote
 
 depends_on:
-  - "Tests Push"
-  - "Tests Pull Request"
-  - "Deploy to ${DRONE_COMMIT_BRANCH}"
-  - "Create docker image"
+  - "Tests_Push"
+  - "Tests_Pull_Request"
+  - "Deploy_to_${DRONE_COMMIT_BRANCH}"
+  - "Create_docker_image"
 
 trigger:
   status:
