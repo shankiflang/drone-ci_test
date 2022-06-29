@@ -63,8 +63,8 @@ steps:
           - staging
           - production
 
-# depends_on:
-#   - Install
+depends_on:
+  - Install
 
 volumes:
   - name: node_modules
