@@ -26,34 +26,17 @@ steps:
       - npm test
     depends_on:
       - install
-    when:
-      event:
-        - push
-      branch: 
-        exclude:
-          - develop
-          - staging
-          - production
 
-  - name: tests
-    image: node:16
-    commands:
-      - npm test
-    depends_on:
-      - install
-    when:
-      event:
-        - pull_request
-      branch: 
-        - develop
-        - staging
-        - production
-        
 trigger:
-  event: 
-    - push
-    - pull_request
-
+  ref:
+    include:
+      - refs/pull/develop
+      - refs/pull/staging
+      - refs/pull/production
+    exclude:
+      - refs/push/develop
+      - refs/push/staging
+      - refs/push/production
 
 
 
