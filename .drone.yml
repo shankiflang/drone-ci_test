@@ -193,7 +193,48 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Notify Push Telegram
+name: Notify Push Main branches
+
+clone:
+  disable: true
+
+steps:
+  - name: send push main branches telegram
+    image: appleboy/drone-telegram
+    settings:
+      token: 
+        from_secret: TELEGRAM_BOT_TOKEN
+      to: 
+        from_secret: TELEGRAM_BOT_CANAL
+      message: >
+        {{#success build.status}}✅{{else}}❌{{/success}} [Push]
+
+        Drone: 
+            build: {{build.number}}
+            link: {{build.link}}
+        Github:
+            author: ${DRONE_COMMIT_AUTHOR}
+            branch: ${DRONE_COMMIT_BRANCH}
+            message: ${DRONE_COMMIT_MESSAGE}
+
+depends_on:
+  - Create docker image
+
+trigger:
+  status:
+    - success
+    - failure
+  event: 
+    - push
+  branch:
+    include:
+      - develop
+      - staging
+      - production
+---
+kind: pipeline
+type: docker
+name: Notify Push
 
 clone:
   disable: true
@@ -226,10 +267,15 @@ trigger:
     - failure
   event: 
     - push
+  branch:
+    exclude:
+      - develop
+      - staging
+      - production
 ---
 kind: pipeline
 type: docker
-name: Notify PR Telegram
+name: Notify PR
 
 clone:
   disable: true
@@ -261,7 +307,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Notify Promote Telegram
+name: Notify Promote
 
 clone:
   disable: true
