@@ -24,7 +24,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: Tests_Push
+name: Tests Push
 
 steps:
   - name: tests push
@@ -54,7 +54,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: Tests_Pull_Request
+name: Tests Pull Request
 
 steps:
   - name: tests pull request
@@ -119,7 +119,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: Create_docker_image
+name: Create docker image
 
 clone:
   disable: true
@@ -166,7 +166,7 @@ volumes:
 #---
 kind: pipeline
 type: docker
-name: Deploy_to_${DRONE_COMMIT_BRANCH}
+name: Deploy to ${DRONE_COMMIT_BRANCH}
 
 clone:
   disable: true
@@ -197,7 +197,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Notify
+name: Notify Push Telegram
 
 clone:
   disable: true
@@ -220,10 +220,25 @@ steps:
             author: ${DRONE_COMMIT_AUTHOR}
             branch: ${DRONE_COMMIT_BRANCH}
             message: ${DRONE_COMMIT_MESSAGE}
-    when:
-      event: 
-        - push  
 
+depends_on:
+  - Tests Push
+
+trigger:
+  status:
+    - success
+    - failure
+  event: 
+    - push
+---
+kind: pipeline
+type: docker
+name: Notify PR Telegram
+
+clone:
+  disable: true
+
+steps:
   - name: send pr telegram
     image: appleboy/drone-telegram
     settings:
@@ -237,10 +252,25 @@ steps:
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
-    when:
-      event: 
-        - pull_request
 
+depends_on:
+  - Tests Pull Request
+
+trigger:
+  status:
+    - success
+    - failure
+  event: 
+    - pull_request
+---
+kind: pipeline
+type: docker
+name: Notify Promote Telegram
+
+clone:
+  disable: true
+
+steps:
   - name: send promote telegram
     image: appleboy/drone-telegram
     settings:
@@ -256,21 +286,13 @@ steps:
             link: {{build.link}}
         Link:
             https://.....fr
-    when:
-      event: 
-        - promote
 
 depends_on:
-  - "Tests_Push"
-  - "Tests_Pull_Request"
-  - "Deploy_to_${DRONE_COMMIT_BRANCH}"
-  - "Create_docker_image"
+  - Deploy_to_${DRONE_COMMIT_BRANCH}
 
 trigger:
   status:
     - success
     - failure
   event: 
-    - push
     - promote
-    - pull_request
