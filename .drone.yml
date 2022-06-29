@@ -7,9 +7,9 @@ steps:
     image: node:16
     volumes:
       - name: cache
-        path: /drone/src/.npm
+        path: /drone/src/node_modules
     commands:
-      - npm ci --cache .npm
+      - yarn install --frozen-lockfile
     depends_on:
       - clone
 
@@ -21,7 +21,7 @@ trigger:
 volumes:
   - name: cache
     host:
-      path: /tmp/drone/cache/npm
+      path: /tmp/drone/cache/node_modules
 
 ---
 kind: pipeline
@@ -33,9 +33,9 @@ steps:
     image: node:16
     volumes:
       - name: cache
-        path: /drone/src/.npm
+        path: /drone/src/node_modules
     commands:
-      - npm test --cache .npm
+      - yarn run test
     when:
       event: 
         - push
@@ -49,9 +49,9 @@ steps:
     image: node:16
     volumes:
       - name: cache
-        path: /drone/src/.npm
+        path: /drone/src/node_modules
     commands:
-      - npm test --cache .npm
+      - yarn run test
     when:
       event: 
         - pull_request
@@ -67,7 +67,7 @@ depends_on:
 volumes:
   - name: cache
     host:
-      path: /tmp/drone/cache/npm
+      path: /tmp/drone/cache/node_modules
 
 
 
