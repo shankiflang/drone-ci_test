@@ -261,10 +261,10 @@ steps:
         - promote
 
 depends_on:
-  - Tests Push
-  - Tests Pull Request
-  - Deploy to ${DRONE_COMMIT_BRANCH}
-  # - Create docker image
+  - "Tests Push"
+  - "Tests Pull Request"
+  - "Deploy to ${DRONE_COMMIT_BRANCH}"
+  - "Create docker image"
 
 trigger:
   status:
