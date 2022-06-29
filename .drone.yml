@@ -195,7 +195,8 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        [Push] {{#success build.status}}✅{{else}}❌{{/success}}
+        {{#success build.status}}✅{{else}}❌{{/success}} [Push]
+
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
@@ -215,7 +216,8 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        [PullRequest] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}
+        {{#success build.status}}✅{{else}}❌{{/success}} [Pull Request]
+
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
@@ -231,7 +233,8 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        [Promote] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}
+        {{#success build.status}}✅{{else}}❌{{/success}} [Promote]
+
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
@@ -243,7 +246,7 @@ steps:
 
 depends_on:
   - Tests
-#   - Deploy to ${DRONE_COMMIT_BRANCH}
+  - Deploy to ${DRONE_COMMIT_BRANCH}
 #   - Create docker image
 
 trigger:
