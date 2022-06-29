@@ -6,10 +6,8 @@ steps:
   - name: install
     image: node:16
     volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
-      - name: dockerfile
-        path: /drone/src/Dockerfile
+      - name: files
+        path: /drone/src/
     commands:
       - yarn install --frozen-lockfile
 
@@ -19,12 +17,9 @@ trigger:
     - pull_request
 
 volumes:
-  - name: node_modules
+  - name: files
     host:
-      path: /tmp/drone/cache/node_modules
-  - name: dockerfile
-    host:
-      path: /tmp/drone/cache/Dockerfile
+      path: /tmp/drone/cache/
 ---
 kind: pipeline
 type: docker
@@ -34,8 +29,8 @@ steps:
   - name: tests push
     image: node:16
     volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
+      - name: files
+        path: /drone/src/
     commands:
       - yarn run test
 
@@ -52,9 +47,9 @@ trigger:
       - production
 
 volumes:
-  - name: node_modules
+  - name: files
     host:
-      path: /tmp/drone/cache/node_modules
+      path: /tmp/drone/cache/
 ---
 kind: pipeline
 type: docker
@@ -64,8 +59,8 @@ steps:
   - name: tests pull request
     image: node:16
     volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
+      - name: files
+        path: /drone/src/
     commands:
       - yarn run test
 
@@ -82,9 +77,9 @@ depends_on:
   - Install
 
 volumes:
-  - name: node_modules
+  - name: files
     host:
-      path: /tmp/drone/cache/node_modules
+      path: /tmp/drone/cache/
 ---
 kind: pipeline
 type: docker
@@ -94,10 +89,8 @@ steps:
   - name: build
     image: node:16
     volumes:
-      - name: node_modules
-        path: /drone/src/node_modules
-      - name: build
-        path: /drone/src/build
+      - name: files
+        path: /drone/src/
     commands:
       - yarn run build
 
@@ -114,12 +107,9 @@ depends_on:
   - Install
 
 volumes:
-  - name: node_modules
+  - name: files
     host:
-      path: /tmp/drone/cache/node_modules  
-  - name: build
-    host:
-      path: /tmp/drone/cache/build
+      path: /tmp/drone/cache/
 ---
 kind: pipeline
 type: docker
@@ -132,12 +122,10 @@ steps:
   - name: publish image
     image: plugins/docker
     volumes:
-      - name: build
-        path: /drone/src/build
+      - name: files
+        path: /drone/src/
       - name: docker
         path: /var/run/docker.sock
-      - name: dockerfile
-        path: /drone/src/Dockerfile
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app
@@ -161,15 +149,12 @@ depends_on:
   - Build
 
 volumes:
-  - name: build
+  - name: files
     host:
-      path: /tmp/drone/cache/build
+      path: /tmp/drone/cache/
   - name: docker
     host:
       path: /var/run/docker.sock
-  - name: dockerfile
-    host:
-      path: /tmp/drone/cache/Dockerfile
 ---
 # ADD PROMOTE PIPELINE HERE
 #---
