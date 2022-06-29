@@ -20,7 +20,6 @@ volumes:
   - name: node_modules
     host:
       path: /tmp/drone/cache/node_modules
-
 ---
 kind: pipeline
 type: docker
@@ -92,8 +91,6 @@ steps:
     volumes:
       - name: node_modules
         path: /drone/src/node_modules
-      - name: build
-        path: /drone/src/build
     commands:
       - yarn run build
 
@@ -112,22 +109,18 @@ depends_on:
 volumes:
   - name: node_modules
     host:
-      path: /tmp/drone/cache/node_modules  
-  - name: build
-    host:
-      path: /tmp/drone/cache/build
+      path: /tmp/drone/cache/node_modules
 ---
 kind: pipeline
 type: docker
 name: Create docker image
 
-clone:
-  disable: true
-
 steps:
   - name: publish image
     image: plugins/docker
     volumes:
+      - name: node_modules
+        path: /drone/src/node_modules
       - name: build
         path: /drone/src/build
       - name: docker
@@ -155,6 +148,9 @@ depends_on:
   - Build
 
 volumes:
+  - name: node_modules
+    host:
+      path: /tmp/drone/cache/node_modules
   - name: build
     host:
       path: /tmp/drone/cache/build
