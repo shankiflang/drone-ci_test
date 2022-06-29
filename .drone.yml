@@ -6,8 +6,8 @@ steps:
   - name: install
     image: node:16
     volumes:
-      - name: files
-        path: /drone/src/
+      - name: node_modules
+        path: /drone/src/node_modules
     commands:
       - yarn install --frozen-lockfile
 
@@ -17,9 +17,9 @@ trigger:
     - pull_request
 
 volumes:
-  - name: files
+  - name: node_modules
     host:
-      path: /tmp/drone/cache/
+      path: /tmp/drone/cache/node_modules
 ---
 kind: pipeline
 type: docker
@@ -29,8 +29,8 @@ steps:
   - name: tests push
     image: node:16
     volumes:
-      - name: files
-        path: /drone/src/
+      - name: node_modules
+        path: /drone/src/node_modules
     commands:
       - yarn run test
 
@@ -47,9 +47,9 @@ trigger:
       - production
 
 volumes:
-  - name: files
+  - name: node_modules
     host:
-      path: /tmp/drone/cache/
+      path: /tmp/drone/cache/node_modules
 ---
 kind: pipeline
 type: docker
@@ -59,8 +59,8 @@ steps:
   - name: tests pull request
     image: node:16
     volumes:
-      - name: files
-        path: /drone/src/
+      - name: node_modules
+        path: /drone/src/node_modules
     commands:
       - yarn run test
 
@@ -77,9 +77,9 @@ depends_on:
   - Install
 
 volumes:
-  - name: files
+  - name: node_modules
     host:
-      path: /tmp/drone/cache/
+      path: /tmp/drone/cache/node_modules
 ---
 kind: pipeline
 type: docker
@@ -89,8 +89,8 @@ steps:
   - name: build
     image: node:16
     volumes:
-      - name: files
-        path: /drone/src/
+      - name: node_modules
+        path: /drone/src/node_modules
     commands:
       - yarn run build
 
@@ -107,23 +107,22 @@ depends_on:
   - Install
 
 volumes:
-  - name: files
+  - name: node_modules
     host:
-      path: /tmp/drone/cache/
+      path: /tmp/drone/cache/node_modules
 ---
 kind: pipeline
 type: docker
 name: Create docker image
 
-clone:
-  disable: true
-
 steps:
   - name: publish image
     image: plugins/docker
     volumes:
-      - name: files
-        path: /drone/src/
+      - name: node_modules
+        path: /drone/src/node_modules
+      - name: build
+        path: /drone/src/build
       - name: docker
         path: /var/run/docker.sock
     settings:
@@ -149,9 +148,12 @@ depends_on:
   - Build
 
 volumes:
-  - name: files
+  - name: node_modules
     host:
-      path: /tmp/drone/cache/
+      path: /tmp/drone/cache/node_modules
+  - name: build
+    host:
+      path: /tmp/drone/cache/build
   - name: docker
     host:
       path: /var/run/docker.sock
@@ -217,7 +219,6 @@ steps:
 
 depends_on:
   - Tests Push
-  - Create docker image
 
 trigger:
   status:
