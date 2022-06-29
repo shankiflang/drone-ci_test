@@ -10,8 +10,6 @@ steps:
         path: /drone/src/node_modules
     commands:
       - yarn install --frozen-lockfile
-    depends_on:
-      - clone
 
 trigger:
   event: 
@@ -36,8 +34,6 @@ steps:
         path: /drone/src/node_modules
     commands:
       - yarn run test
-    depends_on:
-      - clone
 
 depends_on:
   - Install
@@ -134,8 +130,8 @@ steps:
     volumes:
       - name: build
         path: /drone/src/build
-      - name: docker
-        path: /var/run/docker.sock
+      # - name: docker
+      #   path: /var/run/docker.sock
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app
@@ -162,9 +158,9 @@ volumes:
   - name: build
     host:
       path: /tmp/drone/cache/build
-  - name: docker
-    host:
-      path: /var/run/docker.sock
+  # - name: docker
+  #   host:
+  #     path: /var/run/docker.sock
 ---
 # ADD PROMOTE PIPELINE HERE
 #---
