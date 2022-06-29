@@ -45,10 +45,10 @@ steps:
       event:
         - pull_request
       branch: 
-        include:
-          - develop
-          - staging
-          - production
+        - develop
+        - staging
+        - production
+        
 trigger:
   event: 
     - push
