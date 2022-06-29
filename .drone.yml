@@ -10,8 +10,6 @@ steps:
         path: /drone/src/node_modules
     commands:
       - yarn install --frozen-lockfile
-    depends_on:
-      - clone
 
 trigger:
   event: 
@@ -26,7 +24,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: Tests
+name: Tests Push
 
 steps:
   - name: tests push
@@ -36,32 +34,45 @@ steps:
         path: /drone/src/node_modules
     commands:
       - yarn run test
-    depends_on:
-      - clone
-    when:
-      event: 
-        - push
-      branch: 
-        exclude:
-          - develop
-          - staging
-          - production
 
-  - name: tests pull_request
+depends_on:
+  - Install
+
+trigger:
+  event: 
+    - push
+  branch: 
+    exclude:
+      - develop
+      - staging
+      - production
+
+volumes:
+  - name: node_modules
+    host:
+      path: /tmp/drone/cache/node_modules
+---
+kind: pipeline
+type: docker
+name: Tests Pull Request
+
+steps:
+  - name: tests pull request
     image: node:16
     volumes:
       - name: node_modules
         path: /drone/src/node_modules
     commands:
       - yarn run test
-    when:
-      event: 
-        - pull_request
-      branch: 
-        include:
-          - develop
-          - staging
-          - production
+
+trigger:
+  event: 
+    - pull_request
+  branch: 
+    include:
+      - develop
+      - staging
+      - production
 
 depends_on:
   - Install
@@ -119,6 +130,8 @@ steps:
     volumes:
       - name: build
         path: /drone/src/build
+      - name: docker
+        path: /var/run/docker.sock
     settings:
       registry: rg.fr-par.scw.cloud/agence-public
       repo: rg.fr-par.scw.cloud/agence-public/create-react-app
@@ -145,6 +158,9 @@ volumes:
   - name: build
     host:
       path: /tmp/drone/cache/build
+  - name: docker
+    host:
+      path: /var/run/docker.sock
 ---
 # ADD PROMOTE PIPELINE HERE
 #---
@@ -181,7 +197,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Notify
+name: Notify Push Telegram
 
 clone:
   disable: true
@@ -204,10 +220,25 @@ steps:
             author: ${DRONE_COMMIT_AUTHOR}
             branch: ${DRONE_COMMIT_BRANCH}
             message: ${DRONE_COMMIT_MESSAGE}
-    when:
-      event: 
-        - push  
 
+depends_on:
+  - Tests Push
+
+trigger:
+  status:
+    - success
+    - failure
+  event: 
+    - push
+---
+kind: pipeline
+type: docker
+name: Notify PR Telegram
+
+clone:
+  disable: true
+
+steps:
   - name: send pr telegram
     image: appleboy/drone-telegram
     settings:
@@ -221,10 +252,25 @@ steps:
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
-    when:
-      event: 
-        - pull_request
 
+depends_on:
+  - Tests Pull Request
+
+trigger:
+  status:
+    - success
+    - failure
+  event: 
+    - pull_request
+---
+kind: pipeline
+type: docker
+name: Notify Promote Telegram
+
+clone:
+  disable: true
+
+steps:
   - name: send promote telegram
     image: appleboy/drone-telegram
     settings:
@@ -240,20 +286,13 @@ steps:
             link: {{build.link}}
         Link:
             https://.....fr
-    when:
-      event: 
-        - promote
 
 depends_on:
-  - Tests
   - Deploy to ${DRONE_COMMIT_BRANCH}
-  # - Create docker image
 
 trigger:
   status:
     - success
     - failure
   event: 
-    - push
     - promote
-    - pull_request
