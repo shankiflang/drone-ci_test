@@ -195,11 +195,14 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        [Push] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}} - 
+        [Push] {{#success build.status}}✅{{else}}❌{{/success}}
         Drone: 
             build: {{build.number}}
             link: {{build.link}}
         Github:
+            author: {{env.DRONE_COMMIT_AUTHOR}}
+            branch: {{env.DRONE_COMMIT_BRANCH}}
+            message: {{env.DRONE_COMMIT_MESSAGE}}
     when:
       event: 
         - push  
