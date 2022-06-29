@@ -22,66 +22,66 @@ volumes:
       path: /tmp/drone/cache/node_modules
 
 ---
-# kind: pipeline
-# type: docker
-# name: Tests Push
+kind: pipeline
+type: docker
+name: Tests Push
 
-# steps:
-#   - name: tests push
-#     image: node:16
-#     volumes:
-#       - name: node_modules
-#         path: /drone/src/node_modules
-#     commands:
-#       - yarn run test
+steps:
+  - name: tests push
+    image: node:16
+    volumes:
+      - name: node_modules
+        path: /drone/src/node_modules
+    commands:
+      - yarn run test
 
-# depends_on:
-#   - Install
+depends_on:
+  - Install
 
-# trigger:
-#   event: 
-#     - push
-#   branch: 
-#     exclude:
-#       - develop
-#       - staging
-#       - production
+trigger:
+  event: 
+    - push
+  branch: 
+    exclude:
+      - develop
+      - staging
+      - production
 
-# volumes:
-#   - name: node_modules
-#     host:
-#       path: /tmp/drone/cache/node_modules
-# ---
-# kind: pipeline
-# type: docker
-# name: Tests Pull Request
+volumes:
+  - name: node_modules
+    host:
+      path: /tmp/drone/cache/node_modules
+---
+kind: pipeline
+type: docker
+name: Tests Pull Request
 
-# steps:
-#   - name: tests pull request
-#     image: node:16
-#     volumes:
-#       - name: node_modules
-#         path: /drone/src/node_modules
-#     commands:
-#       - yarn run test
+steps:
+  - name: tests pull request
+    image: node:16
+    volumes:
+      - name: node_modules
+        path: /drone/src/node_modules
+    commands:
+      - yarn run test
 
-# trigger:
-#   event: 
-#     - pull_request
-#   branch: 
-#     include:
-#       - develop
-#       - staging
-#       - production
+trigger:
+  event: 
+    - pull_request
+  branch: 
+    include:
+      - develop
+      - staging
+      - production
 
-# depends_on:
-#   - Install
+depends_on:
+  - Install
 
-# volumes:
-#   - name: node_modules
-#     host:
-#       path: /tmp/drone/cache/node_modules
-# ---
+volumes:
+  - name: node_modules
+    host:
+      path: /tmp/drone/cache/node_modules
+---
 kind: pipeline
 type: docker
 name: Build
@@ -261,7 +261,8 @@ steps:
         - promote
 
 depends_on:
-  - Tests
+  - Tests Push
+  - Tests Pull Request
   - Deploy to ${DRONE_COMMIT_BRANCH}
   # - Create docker image
 
