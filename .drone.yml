@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: Build
+name: Validate Push
 
 steps:
   - name: install
@@ -12,10 +12,6 @@ steps:
       - npm ci --cache .npm
     depends_on:
       - clone
-    when:
-      event:
-        - push
-        - pull_request
 
   - name: tests
     image: node:16
@@ -23,9 +19,70 @@ steps:
       - npm test
     depends_on:
       - install
-    when:
-      event:
-        - pull_request
+
+trigger:
+  branch:
+    exclude:
+      - develop
+      - staging
+      - production
+  event: 
+    - push
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache/npm
+---
+kind: pipeline
+type: docker
+name: Validate Pull Request
+
+steps:
+  - name: install
+    image: node:16
+    volumes:
+      - name: cache
+        path: /drone/src/.npm
+    commands:
+      - npm ci --cache .npm
+    depends_on:
+      - clone
+
+  - name: tests
+    image: node:16
+    commands:
+      - npm test
+    depends_on:
+      - install
+
+trigger:
+  branch:
+    - develop
+    - staging
+    - production
+  event: 
+    - pull_request
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache/npm
+---
+kind: pipeline
+type: docker
+name: Validate ${DRONE_COMMIT_BRANCH} Push
+
+steps:
+  - name: install
+    image: node:16
+    volumes:
+      - name: cache
+        path: /drone/src/.npm
+    commands:
+      - npm ci --cache .npm
+    depends_on:
+      - clone
 
   - name: build
     image: node:16
@@ -33,9 +90,6 @@ steps:
       - npm run build
     depends_on:
       - install
-    when:
-      event:
-        - push
 
   - name: publish image
     image: plugins/docker
@@ -50,13 +104,8 @@ steps:
         from_secret: DOCKER_REGISTRY_PASS
     depends_on:
       - build
-    when:
-      branch:
-        - develop
-        - production
-        - staging
-      event:
-        - push
+
+                    # PROMOTE ONLY FOR DEV AND STAGING
 
 trigger:
   branch:
@@ -64,7 +113,6 @@ trigger:
     - staging
     - production
   event: 
-    - push
     - pull_request
 
 volumes:
@@ -74,7 +122,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: Deploy
+name: Deploy to ${DRONE_COMMIT_BRANCH}
 
 clone:
   disable: true
@@ -93,36 +141,6 @@ steps:
       command_timeout: 2m
       script:
         - docker service update --image rg.fr-par.scw.cloud/agence-public/create-react-app:${DRONE_COMMIT_BRANCH} test-drone-ci_nginx-${DRONE_COMMIT_BRANCH}
-    when:
-      branch:
-        - staging
-        - develop
-      event:
-        - push
-
-  - name: Deploy to production
-    image: appleboy/drone-ssh
-    settings:
-      host:
-        - 51.15.222.159
-      key:
-        from_secret: SSH_KEY
-      passphrase:
-        from_secret: SSH_KEY_PASS
-      port: 22
-      command_timeout: 2m
-      script:
-        - docker service update --image rg.fr-par.scw.cloud/agence-public/create-react-app:${DRONE_COMMIT_BRANCH} test-drone-ci_nginx-${DRONE_COMMIT_BRANCH}
-    when:
-      branch:
-        - production
-      event:
-        - promote
-      target:
-        - production
-
-depends_on:
-  - Build
 
 trigger:
   branch:
@@ -130,7 +148,6 @@ trigger:
     - staging
     - production
   event:
-    - push
     - promote
 ---
 kind: pipeline
@@ -149,20 +166,62 @@ steps:
       to: 
         from_secret: TELEGRAM_BOT_CANAL
       message: >
-        {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}} - build: {{build.number}}
-        {{build.link}}
+        [Push] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}} - 
+        Drone: 
+            build: {{build.number}}
+            link: {{build.link}}
+        Github:
+            author: {{DRONE_COMMIT_AUTHOR}}
+            branch: {{DRONE_COMMIT_AUTHOR}}
+            message: {{DRONE_COMMIT_MESSAGE}}
+    when:
+      event: 
+        - push  
+
+  - name: send telegram
+    image: appleboy/drone-telegram
+    settings:
+      token: 
+        from_secret: TELEGRAM_BOT_TOKEN
+      to: 
+        from_secret: TELEGRAM_BOT_CANAL
+      message: >
+        [PullRequest] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}
+        Drone: 
+            build: {{build.number}}
+            link: {{build.link}}
+    when:
+      event: 
+        - pull_request
+
+  - name: send telegram
+    image: appleboy/drone-telegram
+    settings:
+      token: 
+        from_secret: TELEGRAM_BOT_TOKEN
+      to: 
+        from_secret: TELEGRAM_BOT_CANAL
+      message: >
+        [Promote] {{#success build.status}}✅{{else}}❌{{/success}} Build {{build.status}}
+        Drone: 
+            build: {{build.number}}
+            link: {{build.link}}
+        Link:
+            https://.....fr
+    when:
+      event: 
+        - promote
 
 depends_on:
-  - Build
-  - Deploy
+  - Validate Push
+  - Validate Pull Request
+  - Deploy to ${DRONE_COMMIT_BRANCH}
 
 trigger:
-  branch:
-    - develop
-    - staging
-    - production
   status:
     - success
     - failure
   event: 
     - push
+    - promote
+    - pull_request
