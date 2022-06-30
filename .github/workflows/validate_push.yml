@@ -1,0 +1,65 @@
+name: Validate Push
+
+on:
+  push:
+    branches-ignore:    
+      - develop
+      - staging
+      - production
+
+jobs:
+  Install:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            **/node_modules
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+  
+  Test:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            **/node_modules
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Test code
+        run: yarn run test
+  
+  # Notify:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: node:16
+  #   steps:
+  #     - name: send telegram message
+  #       uses: appleboy/telegram-action@master
+  #       with:
+  #         to: ${{ secrets.TELEGRAM_TO }}
+  #         token: ${{ secrets.TELEGRAM_TOKEN }}
+  #         message: |
+  #           ${{ github.actor }} created commit:
+  #           Commit message: ${{ github.event.commits[0].message }}
+            
+  #           Repository: ${{ github.repository }}
+            
+  #           See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
