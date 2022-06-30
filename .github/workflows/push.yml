@@ -1,13 +1,8 @@
-name: Validate Push
+name: Push
 
 on:
   push:
     branches-ignore:    
-      - develop
-      - staging
-      - production
-  pull_request:
-    branches:    
       - develop
       - staging
       - production
