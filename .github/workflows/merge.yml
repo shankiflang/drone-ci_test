@@ -1,14 +1,16 @@
-name: Push OP
+name: Merge
 
 on:
-  push:
-    branches:    
+  pull_request:
+    branches:
       - develop
       - staging
       - production
+    types: [closed]
       
 jobs:
   Install:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     container:
       image: node:16
@@ -29,6 +31,7 @@ jobs:
   
   Build:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     needs: Install
     container:
       image: node:16
@@ -46,7 +49,17 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Test code
         run: yarn run build
-       
+  
+  
+  
+  
+  # Docker image
+  
+  
+  
+  # Deploy
+  
+  
   # Notify:
   #   runs-on: ubuntu-latest
   #   container:
