@@ -6,7 +6,12 @@ on:
       - develop
       - staging
       - production
-
+  pull_request:
+    branches:    
+      - develop
+      - staging
+      - production
+      
 jobs:
   Install:
     runs-on: ubuntu-latest
