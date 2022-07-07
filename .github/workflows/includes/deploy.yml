@@ -1,0 +1,12 @@
+on:
+  workflow_call:
+
+jobs: 
+  Deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Echo Test
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
