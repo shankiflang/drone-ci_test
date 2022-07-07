@@ -10,10 +10,10 @@ on:
 jobs:
   Install:
     name: Install
-    uses: shankiflang/drone-ci_test/.github/workflows/includes/install.yml@main  
+    uses: shankiflang/drone-ci_test/.github/workflows/install.yml@main  
   
   Tests:
     name: Tests
     needs: Install
-    uses: shankiflang/drone-ci_test/.github/workflows/includes/tests.yml@main
+    uses: shankiflang/drone-ci_test/.github/workflows/tests.yml@main
   # Notify

@@ -11,16 +11,16 @@ on:
 jobs:
   Install:
     name: Install
-    uses: shankiflang/drone-ci_test/.github/workflows/includes/install.yml@main  
+    uses: shankiflang/drone-ci_test/.github/workflows/install.yml@main  
   Build:
     name: Build
     if: github.event.pull_request.merged == true
     needs: Install
-    uses: shankiflang/drone-ci_test/.github/workflows/includes/build.yml@main
+    uses: shankiflang/drone-ci_test/.github/workflows/build.yml@main
   # Docker image
   Deploy:
     if: github.event.pull_request.merged == true && ( github.event.pull_request.base.ref == 'develop' || github.event.pull_request.base.ref == 'staging' ) 
     name: Deploy
     needs: Install
-    uses: shankiflang/drone-ci_test/.github/workflows/includes/deploy.yml@main
+    uses: shankiflang/drone-ci_test/.github/workflows/deploy.yml@main
   # Notify
