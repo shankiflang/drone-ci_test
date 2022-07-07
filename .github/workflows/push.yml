@@ -11,6 +11,10 @@ jobs:
   Install:
     name: Install
     uses: shankiflang/drone-ci_test/.github/workflows/install.yml@main  
+    with:
+      steps.yarn-cache-dir-path.outputs.dir: steps.yarn-cache-dir-path.outputs.dir
+      runner.os: runner.os
+      hashedFiles: hashFiles('**/yarn.lock') 
   
   Tests:
     name: Tests
