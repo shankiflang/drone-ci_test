@@ -23,4 +23,6 @@ jobs:
     name: Deploy
     needs: Install
     uses: shankiflang/drone-ci_test/.github/workflows/deploy.yml@main
+    with:
+      ref: github.event.pull_request.base.ref
   # Notify
