@@ -50,15 +50,21 @@ jobs:
       - name: Test code
         run: yarn run build
   
-  
-  
-  
   # Docker image
   
   
   
   # Deploy
-  
+  Deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && ( github.event.pull_request.base.ref == 'develop' || github.event.pull_request.base.ref == 'staging' ) 
+    needs: Build
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test code
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
   
   # Notify:
   #   runs-on: ubuntu-latest
