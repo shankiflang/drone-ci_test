@@ -1,0 +1,34 @@
+on:
+  pull_request:
+    branches: 
+      - staging
+      - production
+    types: [closed]
+
+jobs:
+  Deploy_To_Staging:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
+    environment: 
+      name: staging
+      url: https://staging.shankiflang.fr
+    concurrency: staging
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploying code
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
+  Deploy_To_Prod:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'production'
+    environment: 
+      name: production
+      url: https://shankiflang.fr
+    concurrency: production
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploying code
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
