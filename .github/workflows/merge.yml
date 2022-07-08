@@ -28,7 +28,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-  
   Build:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
@@ -49,23 +48,42 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Test code
         run: yarn run build
-  
   # Docker image
-  
-  
-  
-  # Deploy
-  Deploy:
+  Deploy_To_Staging:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && ( github.event.pull_request.base.ref == 'develop' || github.event.pull_request.base.ref == 'staging' ) 
+    if: |
+      github.event.pull_request.merged == true 
+      && 
+      ( github.event.pull_request.base.ref == 'staging') 
     needs: Build
+    environment: 
+      name: staging
+      url: https://staging.xxxxx.com
+    concurrency: staging
     container:
       image: node:16
     steps:
       - uses: actions/checkout@v3
-      - name: Test code
-        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
-  
+      - name: Deploying code
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
+  Deploy_To_Prod:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.merged == true 
+      && 
+      ( github.event.pull_request.base.ref == 'production') 
+    needs: Build
+    environment: 
+      name: production
+      url: https://xxxxx.com
+    concurrency: production
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploying code
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
+
   # Notify:
   #   runs-on: ubuntu-latest
   #   container:
