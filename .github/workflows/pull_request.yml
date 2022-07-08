@@ -43,6 +43,34 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Build code
         run: yarn run build
+  Deploy_To_Staging:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'staging'
+    needs: Build
+    environment: 
+      name: staging
+      url: https://staging.xxxxx.com
+    concurrency: staging
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploying code
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
+  Deploy_To_Prod:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'production'
+    needs: Build
+    environment: 
+      name: production
+      url: https://xxxxx.com
+    concurrency: production
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploying code
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
   # Notify:
   #   runs-on: ubuntu-latest
   #   container:
