@@ -49,23 +49,6 @@ jobs:
       - name: Test code
         run: yarn run build
   # Docker image
-  Deploy_To_Dev:
-    runs-on: ubuntu-latest
-    if: |
-      github.event.pull_request.merged == true 
-      && 
-      ( github.event.pull_request.base.ref == 'develop') 
-    needs: Build
-    environment: 
-      name: develop
-      url: https://dev.xxxxx.com
-    concurrency: develop
-    container:
-      image: node:16
-    steps:
-      - uses: actions/checkout@v3
-      - name: Deploying code
-        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
   Deploy_To_Staging:
     runs-on: ubuntu-latest
     if: |
@@ -82,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Deploying code
-        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
   Deploy_To_Prod:
     runs-on: ubuntu-latest
     if: |
@@ -99,7 +82,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Deploying code
-        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"      
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
+
   # Notify:
   #   runs-on: ubuntu-latest
   #   container:
