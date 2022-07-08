@@ -11,7 +11,7 @@ jobs:
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
     environment: 
       name: staging
-      url: https://staging.${{secrets.DOMAIN}}
+      url: https://staging.shankiflang.fr
     concurrency: staging
     container:
       image: node:16
@@ -24,7 +24,7 @@ jobs:
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'production'
     environment: 
       name: production
-      url: https://${{secrets.DOMAIN}}
+      url: https://shankiflang.fr
     concurrency: production
     container:
       image: node:16
