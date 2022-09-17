@@ -22,7 +22,6 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Download build cache
       - name: Use Node.js 16
         uses: actions/setup-node@v1
         with:
