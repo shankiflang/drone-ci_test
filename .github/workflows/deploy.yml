@@ -15,8 +15,6 @@ jobs:
   Deploy_To_Staging:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
-    with:
-      DOMAIN_NAME: 3.x
     environment:
       name: staging
       url: ${{ env.DOMAIN_URL_STAGING }}
