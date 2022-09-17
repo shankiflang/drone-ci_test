@@ -22,7 +22,7 @@ jobs:
       - name: Deploying code
         run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
       - name: Testing secrets
-        run: echo "Secrets: ${{ secrets.DOMAIN_NAME }}"
+        run: echo "Secrets ${{ secrets.DOMAIN_NAME }}"
   Deploy_To_Prod:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'production'
