@@ -14,24 +14,17 @@ jobs:
       image: node:16
     steps:
       - uses: actions/checkout@v3
-      - name: Install packages
-        run: yarn install --frozen-lockfile
       - uses: actions/cache@v2
-        id: yarn-cache
+        id: cache
         with:
           path: |
             node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - uses: actions/cache@v2
-        id: build-cache
-        with:
-          path: |
             build
-          key: ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
+          key: cache-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-build-
+            cache-
+      - name: Install packages
+        run: yarn install --frozen-lockfile
   Test:
     runs-on: ubuntu-latest
     needs: Install
@@ -40,21 +33,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v2
-        id: yarn-cache
+        id: cache
         with:
           path: |
             node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - uses: actions/cache@v2
-        id: build-cache
-        with:
-          path: |
             build
-          key: ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
+          key: cache-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-build-
+            cache-
       - name: Test code
         run: yarn test
   # Notify:
