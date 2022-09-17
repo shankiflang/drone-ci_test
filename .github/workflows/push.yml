@@ -15,14 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
-        id: cache
+        id: yarn-cache
         with:
           path: |
             node_modules
-            build
-          key: cache-${{ github.run_id }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            cache
+            yarn
       - name: Install packages
         run: yarn install --frozen-lockfile
   Test:
@@ -33,14 +32,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
-        id: cache
+        id: yarn-cache
         with:
           path: |
             node_modules
-            build
-          key: cache-${{ github.run_id }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            cache
+            yarn
       - name: Test code
         run: yarn test
   # Notify:

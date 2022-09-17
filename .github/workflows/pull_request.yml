@@ -15,14 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
-        id: cache
+        id: yarn-cache
         with:
           path: |
             node_modules
-            build
-          key: cache-${{ github.run_id }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            cache
+            yarn
       - name: Install packages
         run: yarn install --frozen-lockfile
   Build:
@@ -33,14 +32,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
-        id: cache
+        id: yarn-cache
         with:
           path: |
             node_modules
-            build
-          key: cache-${{ github.run_id }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            cache
+            yarn
+      - uses: actions/cache@v3
+        id: build-cache
+        with:
+          path: |
+            build
+          key: build-${{ hashFiles('build/*.*') }}
+          restore-keys: |
+            build
       - name: Build code
         run: yarn build
       - name: Test build
@@ -52,14 +58,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
-        id: cache
+        id: yarn-cache
         with:
           path: |
             node_modules
-            build
-          key: cache-${{ github.run_id }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            cache
+            yarn
+      - uses: actions/cache@v3
+        id: build-cache
+        with:
+          path: |
+            build
+          key: build-${{ hashFiles('build/*.*') }}
+          restore-keys: |
+            build
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
