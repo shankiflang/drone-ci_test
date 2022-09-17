@@ -49,6 +49,8 @@ jobs:
             ${{ runner.os }}-build-
       - name: Build code
         run: yarn build
+      - name: Test build
+        run: ls -la
   Push:
     runs-on: ubuntu-latest
     needs: Build
