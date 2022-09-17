@@ -22,7 +22,7 @@ jobs:
             build
           key: cache-${{ github.run_id }}
           restore-keys: |
-            cache-
+            cache
       - name: Install packages
         run: yarn install --frozen-lockfile
   Test:
@@ -40,7 +40,7 @@ jobs:
             build
           key: cache-${{ github.run_id }}
           restore-keys: |
-            cache-
+            cache
       - name: Test code
         run: yarn test
   # Notify:
