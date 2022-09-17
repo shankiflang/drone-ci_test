@@ -63,8 +63,8 @@ jobs:
         with:
           push: true
           tags: natiq/drone-ci_test:latest
-          context: ./next
-          file: ../docker/dev/next/Dockerfile
+          context: ./
+          file: ./Dockerfile
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
   # Notify:
