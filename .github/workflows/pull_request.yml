@@ -19,9 +19,9 @@ jobs:
         with:
           path: |
             node_modules
-          key: yarn-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            yarn-
+            ${{ runner.os }}-yarn-
       - name: Install packages
         run: yarn --frozen-lockfile
 
@@ -37,17 +37,17 @@ jobs:
         with:
           path: |
             node_modules
-          key: yarn-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            yarn-
+            ${{ runner.os }}-yarn-
       - uses: actions/cache@v3
         id: build-cache
         with:
           path: |
             ${{ github.workspace }}/.next/cache
-          key: nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
-            nextjs-
+            ${{ runner.os }}-nextjs-
       - name: Build code
         run: yarn build
       - name: Test build
@@ -64,17 +64,17 @@ jobs:
         with:
           path: |
             node_modules
-          key: yarn-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            yarn-
+            ${{ runner.os }}-yarn-
       - uses: actions/cache@v3
         id: build-cache
         with:
           path: |
             ${{ github.workspace }}/.next/cache
-          key: nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
-            nextjs-
+            ${{ runner.os }}-nextjs-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
