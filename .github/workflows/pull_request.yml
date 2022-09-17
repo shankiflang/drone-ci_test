@@ -21,7 +21,6 @@ jobs:
         with:
           path: |
             **/node_modules
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -37,12 +36,25 @@ jobs:
         with:
           path: |
             **/node_modules
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Build code
         run: yarn build
+  Push:
+    runs-on: ubuntu-latest
+    needs: Build
+    if: github.event.pull_request.base.ref == 'staging' || github.event.pull_request.base.ref == 'production'
+    steps:
+      - name: Push image to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: natiq/drone-ci_test:latest
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: rg.fr-par.scw.cloud/agence-public
+          context: ./next
+          dockerfile: ../docker/dev/next/Dockerfile
   # Notify:
   #   runs-on: ubuntu-latest
   #   container:
