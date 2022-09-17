@@ -13,7 +13,7 @@ jobs:
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
     environment:
       name: staging
-      url: https://staging.${{ secrets.DOMAIN_NAME }}
+      # url: https://staging.${{ secrets.DOMAIN_NAME }}
     concurrency: staging
     container:
       image: node:16
@@ -21,12 +21,14 @@ jobs:
       - uses: actions/checkout@v3
       - name: Deploying code
         run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
+      - name: Testing secrets
+        run: echo "Secrets: ${{ secrets.DOMAIN_NAME }}"
   Deploy_To_Prod:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'production'
     environment:
       name: production
-      url: https://${{ secrets.DOMAIN_NAME }}
+      # url: https://${{ secrets.DOMAIN_NAME }}
     concurrency: production
     container:
       image: node:16
