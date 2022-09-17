@@ -13,7 +13,7 @@ jobs:
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
     environment:
       name: staging
-      url: https://staging.${{ DOMAIN_NAME }}
+      url: https://staging.${{ secrets.DOMAIN_NAME }}
     concurrency: staging
     container:
       image: node:16
@@ -26,7 +26,7 @@ jobs:
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'production'
     environment:
       name: production
-      url: https://${{ DOMAIN_NAME }}
+      url: https://${{ secrets.DOMAIN_NAME }}
     concurrency: production
     container:
       image: node:16
