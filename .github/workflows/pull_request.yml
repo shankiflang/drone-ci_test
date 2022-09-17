@@ -13,14 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
-        id: cache
+        id: yarn-cache
         with:
           path: |
-            ${{ github.workspace }}/node_modules
-            ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-
+            ${{ runner.os }}-yarn-
       - name: Use Node.js 16
         uses: actions/setup-node@v1
         with:
@@ -34,10 +33,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
-        id: cache
+        id: yarn-cache
         with:
           path: |
-            ${{ github.workspace }}/node_modules
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - uses: actions/cache@v3
+        id: build-cache
+        with:
+          path: |
             ${{ github.workspace }}/.next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
@@ -58,10 +64,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
-        id: cache
+        id: yarn-cache
         with:
           path: |
-            ${{ github.workspace }}/node_modules
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - uses: actions/cache@v3
+        id: build-cache
+        with:
+          path: |
             ${{ github.workspace }}/.next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
