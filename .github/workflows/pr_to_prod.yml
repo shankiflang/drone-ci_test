@@ -1,0 +1,37 @@
+name: Pull Request to Production
+
+on:
+  pull_request:
+    branches:
+      - production
+
+jobs:
+  Push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retag to latest
+        uses: koraykoska/retag-docker-image@0.2.4
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          name: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}
+          old_tag: pre
+          new_tag: latest
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+  # Notify:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: node:16
+  #   steps:
+  #     - name: send telegram message
+  #       uses: appleboy/telegram-action@master
+  #       with:
+  #         to: ${{ secrets.TELEGRAM_TO }}
+  #         token: ${{ secrets.TELEGRAM_TOKEN }}
+  #         message: |
+  #           ${{ github.actor }} created commit:
+  #           Commit message: ${{ github.event.commits[0].message }}
+
+  #           Repository: ${{ github.repository }}
+
+  #           See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
