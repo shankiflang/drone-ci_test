@@ -101,7 +101,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: rg.fr-par.scw.cloud/agence-public/drone-ci_test:latest
+          tags: |
+            rg.fr-par.scw.cloud/agence-public/drone-ci_test:latest
+            rg.fr-par.scw.cloud/agence-public/drone-ci_test:${{ github.sha }}
           context: ./
           file: ./Dockerfile
       - name: Image digest
