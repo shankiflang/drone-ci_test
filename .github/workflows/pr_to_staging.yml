@@ -10,15 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Retag to latest
-        uses: ybrin/retag-docker-image@0.1.0
+        uses: tinact/docker.image-retag@master
         with:
+          image_name: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}
+          image_old_tag: dev
+          image_new_tag: pre
           registry: ${{ secrets.DOCKER_REGISTRY }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          name: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}
-          tag: dev
-          new_tag: pre
-
+          registry_username: ${{ secrets.DOCKER_USERNAME }}
+          registry_password: ${{ secrets.DOCKER_PASSWORD }}
   # Notify:
   #   runs-on: ubuntu-latest
   #   container:

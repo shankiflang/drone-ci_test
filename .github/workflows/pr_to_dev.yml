@@ -58,9 +58,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-      - name: test code
-        if: steps.build-cache.outputs.cache-hit != 'true'
-        run: ls -la
       - name: Build code
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: yarn build
