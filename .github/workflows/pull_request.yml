@@ -102,8 +102,8 @@ jobs:
         with:
           push: true
           tags: |
-            ${{ secrets.DOCKER_REGISTRY }}/drone-ci_test:latest
-            ${{ secrets.DOCKER_REGISTRY }}/drone-ci_test:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:latest
+            ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ github.sha }}
           context: ./
           file: ./Dockerfile
       - name: Image digest
