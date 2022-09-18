@@ -1,34 +1,38 @@
+name: Deploy
+
 on:
   pull_request:
-    branches: 
+    branches:
       - staging
       - production
     types: [closed]
+
+env:
+  DOMAIN_URL_PROD: https://natiq.fr
+  DOMAIN_URL_STAGING: https://staging.natiq.fr
 
 jobs:
   Deploy_To_Staging:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
-    environment: 
+    environment:
       name: staging
-      url: https://staging.shankiflang.fr
+      url: ${{ env.DOMAIN_URL_STAGING }}
     concurrency: staging
     container:
       image: node:16
     steps:
-      - uses: actions/checkout@v3
       - name: Deploying code
-        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
   Deploy_To_Prod:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'production'
-    environment: 
+    environment:
       name: production
-      url: https://shankiflang.fr
+      url: ${{ env.DOMAIN_URL_PROD }}
     concurrency: production
     container:
       image: node:16
     steps:
-      - uses: actions/checkout@v3
       - name: Deploying code
-        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"  
+        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
