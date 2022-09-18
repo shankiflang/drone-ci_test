@@ -22,7 +22,6 @@ jobs:
     container:
       image: node:16
     steps:
-      - uses: actions/checkout@v3
       - name: Deploying code
         run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
   Deploy_To_Prod:
@@ -35,6 +34,5 @@ jobs:
     container:
       image: node:16
     steps:
-      - uses: actions/checkout@v3
       - name: Deploying code
         run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
