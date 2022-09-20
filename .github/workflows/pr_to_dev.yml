@@ -63,7 +63,7 @@ jobs:
       - name: Build code
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: |
-          cd next
+          cd next 
           yarn build
 
   Push:

@@ -1,0 +1,21 @@
+name: Deploy to staging
+
+on:
+  pull_request:
+    branches:
+      - staging
+    types: [closed]
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
+    environment:
+      name: staging
+      url: https://staging.natiq.fr
+    concurrency: staging
+    container:
+      image: node:16
+    steps:
+      - name: Deploying code
+        run: echo "Deploying to staging"
