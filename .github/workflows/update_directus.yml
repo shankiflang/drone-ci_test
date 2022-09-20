@@ -1,11 +1,11 @@
-name: Pull Request to directus
+name: Update Directus image
 
 on:
   pull_request:
     paths:
       - "directus/npm-requirements.txt"
     branches:
-      - develop
+      - staging
 
 jobs:
   Push:

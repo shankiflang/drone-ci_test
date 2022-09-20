@@ -8,30 +8,16 @@ on:
     types: [closed]
 
 env:
-  DOMAIN_URL_PROD: https://natiq.fr
+  DOMAIN_URL_PRODUCTION: https://natiq.fr
   DOMAIN_URL_STAGING: https://staging.natiq.fr
 
 jobs:
   Deploy_To_Staging:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
     environment:
-      name: staging
-      url: ${{ env.DOMAIN_URL_STAGING }}
+      name: ${{ GITHUB_BASE_REF }}
+      url: ${{ env.DOMAIN_URL_${{ GITHUB_BASE_REF }} }}
     concurrency: staging
-    container:
-      image: node:16
-    steps:
-      - name: Deploying code
-        run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
-
-  Deploy_To_Prod:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'production'
-    environment:
-      name: production
-      url: ${{ env.DOMAIN_URL_PROD }}
-    concurrency: production
     container:
       image: node:16
     steps:
