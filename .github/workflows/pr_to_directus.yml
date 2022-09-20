@@ -29,5 +29,5 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/directus:latest
-          context: ./directus
-          file: ../docker/prod/directus/Dockerfile
+          context: directus
+          file: docker/prod/directus/Dockerfile
