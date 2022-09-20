@@ -24,6 +24,7 @@ jobs:
     steps:
       - name: Deploying code
         run: echo "Deploying to ${{ github.event.pull_request.base.ref }}"
+
   Deploy_To_Prod:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'production'
