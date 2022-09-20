@@ -2,10 +2,10 @@ name: Pull Request to directus
 
 on:
   pull_request:
-    branches:
-      - develop
     paths:
       - "directus/npm-requirements.txt"
+    branches:
+      - develop
 
 jobs:
   Push:
