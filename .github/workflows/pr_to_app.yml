@@ -1,4 +1,4 @@
-name: Pull Request to ${{ GITHUB_BASE_REF }}
+name: Pull Request to ${{ github.event.pull_request.base.ref }}
 
 on:
   pull_request:
@@ -16,10 +16,10 @@ jobs:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Pull ${{ GITHUB_REF_NAME }} image
-        run: docker pull ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ GITHUB_REF_NAME }}
+      - name: Pull ${{ github.event.pull_request.ref.name }} image
+        run: docker pull ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ github.event.pull_request.ref.name }}
       - name: Tag production image
-        run: docker tag ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ GITHUB_REF_NAME }} ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ GITHUB_BASE_REF }}
+        run: docker tag ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ github.event.pull_request.ref.name }} ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ github.event.pull_request.base.ref }}
       - name: Push production image
-        run: docker push ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ GITHUB_BASE_REF }}
+        run: docker push ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:${{ github.event.pull_request.base.ref }}
 # Update directus image if needed
