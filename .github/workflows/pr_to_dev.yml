@@ -16,8 +16,8 @@ jobs:
         id: yarn-cache
         with:
           path: |
-            node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+            ${{ github.workspace }}/next/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('next/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Use Node.js 16
@@ -27,7 +27,9 @@ jobs:
           node-version: 16
       - name: Install packages
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn --frozen-lockfile
+        run: |
+          cd next
+          yarn --frozen-lockfile
 
   Build:
     runs-on: ubuntu-latest
@@ -40,8 +42,8 @@ jobs:
         id: yarn-cache
         with:
           path: |
-            node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+            ${{ github.workspace }}/next/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('next/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Download build cache
@@ -49,7 +51,7 @@ jobs:
         id: build-cache
         with:
           path: |
-            ${{ github.workspace }}/.next/cache
+            ${{ github.workspace }}/next/.next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
@@ -60,7 +62,9 @@ jobs:
           node-version: 16
       - name: Build code
         if: steps.build-cache.outputs.cache-hit != 'true'
-        run: yarn build
+        run: |
+          cd next
+          yarn build
 
   Push:
     runs-on: ubuntu-latest
@@ -73,8 +77,8 @@ jobs:
         id: yarn-cache
         with:
           path: |
-            node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+            ${{ github.workspace }}/next/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('next/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Download build cache
@@ -82,7 +86,7 @@ jobs:
         id: build-cache
         with:
           path: |
-            ${{ github.workspace }}/.next/cache
+            ${{ github.workspace }}/next/.next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
@@ -102,5 +106,5 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:dev
-          context: ./
-          file: ./Dockerfile
+          context: next
+          file: docker/prod/next/Dockerfile
