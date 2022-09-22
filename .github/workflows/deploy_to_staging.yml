@@ -7,9 +7,21 @@ on:
     types: [closed]
 
 jobs:
+  Import:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    concurrency: staging
+    container:
+      image: node:16
+    steps:
+      - name: Running yarn directus-import
+        run: |
+          cd next
+          yarn directus-import
+
   Deploy:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'staging'
+    if: github.event.pull_request.merged
     environment:
       name: staging
       url: https://staging.natiq.fr
