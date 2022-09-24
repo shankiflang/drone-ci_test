@@ -5,19 +5,21 @@ on:
     branches:
       - staging
     types: [closed]
+    paths:
+      - "next/*"
+      - "docker/prod/next/Dockerfile"
 
 jobs:
   Import:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged
-    concurrency: staging
+    concurrency: next-staging
     container:
       image: node:16
     steps:
       - name: Running yarn directus-import
-        run: |
-          cd next
-          yarn directus-import
+        working-directory: directus/scripts
+        run: yarn import-prod
 
   Deploy:
     runs-on: ubuntu-latest
@@ -25,9 +27,9 @@ jobs:
     environment:
       name: staging
       url: https://staging.natiq.fr
-    concurrency: staging
+    concurrency: next-staging
     container:
       image: node:16
     steps:
       - name: Deploying code
-        run: echo "Deploying to staging"
+        run: echo "Deploying Next to staging"

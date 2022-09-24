@@ -1,0 +1,20 @@
+name: Deploy Directus to staging
+
+on:
+  pull_request:
+    branches:
+      - staging
+    types: [closed]
+    paths:
+      - "directus/npm-requirements.txt"
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    concurrency: directus-staging
+    container:
+      image: node:16
+    steps:
+      - name: Deploying code
+        run: echo "Deploying Directus to staging"
