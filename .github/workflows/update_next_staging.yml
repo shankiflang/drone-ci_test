@@ -1,9 +1,12 @@
-name: Pull Request to Staging
+name: Update Next image staging
 
 on:
   pull_request:
     branches:
       - staging
+    paths:
+      - "next/**"
+      - "docker/prod/next/Dockerfile"
 
 jobs:
   Push:
@@ -21,4 +24,3 @@ jobs:
         run: docker tag ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:dev ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:staging
       - name: Push staging image
         run: docker push ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:staging
-# Update directus image if needed
