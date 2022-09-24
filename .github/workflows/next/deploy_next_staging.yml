@@ -6,7 +6,7 @@ on:
       - staging
     types: [closed]
     paths:
-      - "next/*"
+      - "next/**"
       - "docker/prod/next/Dockerfile"
 
 jobs:

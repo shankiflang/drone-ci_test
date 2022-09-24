@@ -5,7 +5,7 @@ on:
     branches:
       - staging
     paths:
-      - "next/*"
+      - "next/**"
       - "docker/prod/next/Dockerfile"
 
 jobs:

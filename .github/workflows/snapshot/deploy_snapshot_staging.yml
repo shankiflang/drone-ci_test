@@ -6,7 +6,7 @@ on:
       - staging
     types: [closed]
     paths:
-      - "directus/snapshot/*"
+      - "directus/snapshot/**"
 
 jobs:
   Deploy:
