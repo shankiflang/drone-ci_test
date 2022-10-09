@@ -11,7 +11,7 @@ COPY public ./public
 COPY --chown=nextjs:nodejs .next ./.next
 COPY node_modules ./node_modules
 COPY package.json ./package.json
-COPY .env.production ./.env
+COPY .env ./.env
 
 USER nextjs
 
