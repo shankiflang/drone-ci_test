@@ -1,0 +1,3 @@
+mutation enableOTP($otp: String!, $secret: String!) {
+	users_me_tfa_enable(otp: $otp, secret: $secret)
+}

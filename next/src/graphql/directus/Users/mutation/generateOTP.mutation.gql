@@ -1,0 +1,6 @@
+mutation generateOTP($password: String!) {
+	users_me_tfa_generate(password: $password) {
+        secret
+		otpauth_url
+    }
+}

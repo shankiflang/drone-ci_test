@@ -1,0 +1,6 @@
+mutation ImportFileFromUrl($url: String!, $data: create_directus_files_input!) {
+    import_file(url: $url, data: $data) {
+        id
+        ...FileParts
+    }
+}

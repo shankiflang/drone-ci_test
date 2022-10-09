@@ -1,0 +1,6 @@
+mutation UpdateFile($id: ID!, $data: update_directus_files_input!) {
+    update_files_item(id: $id, data: $data) {
+      id
+      ...FileParts
+    }
+}

@@ -1,0 +1,90 @@
+version: '3'
+services:
+  directus:
+    build:
+      context: ./directus
+      dockerfile: ../docker/directus/dev/Dockerfile
+    networks:
+      - GRAND_NETWORK
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8055/server/health || exit 1
+      start_period: 20s
+      interval: 10s
+      timeout: 15s
+      retries: 1
+    depends_on:
+      - directusdb
+    volumes:
+      - directusUploads:/directus/uploads
+      - ./directus/snapshots:/directus/snapshots
+    environment:
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+      PUBLIC_URL: 'https://admin.localhost'
+      DB_CLIENT: 'pg'
+      DB_HOST: 'directusdb'
+      DB_PORT: '5432'
+      DB_DATABASE: 'directus'
+      DB_USER: 'directus'
+      DB_PASSWORD: 'directus'
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'admin'
+      EMAIL_ALLOW_GUEST_SEND: 'false'
+      EMAIL_FROM: 'boilerplate@slatsh.com'
+      EMAIL_TRANSPORT: 'mailgun'
+      EMAIL_MAILGUN_API_KEY: 'f4bac7318fb30399d81aceb178a6896b-054ba6b6-60fb99f9'
+      EMAIL_MAILGUN_DOMAIN: 'sandbox8fc4cb9e44ca40608f7bddd9cf057330.mailgun.org'
+      EMAIL_MAILGUN_HOST: 'api.mailgun.net'
+      REFRESH_TOKEN_COOKIE_SECURE: 'true'
+      REFRESH_TOKEN_COOKIE_SAME_SITE: 'none'
+      REFRESH_TOKEN_COOKIE_NAME: 'refresh_token'
+      ACCESS_TOKEN_TTL: '15m'
+      REFRESH_TOKEN_TTL: '30d'
+      CORS_ENABLED: 'true'
+      CORS_ORGIN: 'true'
+
+  directusdb:
+    image: postgis/postgis:13-master
+    volumes:
+      - directusdb:/var/lib/postgresql/data
+    networks:
+      - GRAND_NETWORK
+    environment:
+      POSTGRES_USER: 'directus'
+      POSTGRES_PASSWORD: 'directus'
+      POSTGRES_DB: 'directus'
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./docker/nginx/pages/errors.html:/etc/nginx/conf.d/pages/errors.html
+      - ./docker/nginx/certs/localhost.crt:/etc/nginx/conf.d/certs/localhost.crt
+      - ./docker/nginx/certs/localhost.key:/etc/nginx/conf.d/certs/localhost.key
+    networks:
+      - GRAND_NETWORK
+    depends_on:
+      - directus
+    ports:
+      - 443:443
+  # next:
+  #   build:
+  #     context: ./next
+  #     dockerfile: ../docker/dev/next/Dockerfile
+  #     target: deps
+  #   tty: true
+  #   networks:
+  #     - GRAND_NETWORK
+  #   volumes:
+  #     - ./next:/app
+  #   command: [ "yarn", "dev" ]
+
+networks:
+  GRAND_NETWORK:
+
+
+volumes:
+  directusdb:
+  directusUploads:
+
+

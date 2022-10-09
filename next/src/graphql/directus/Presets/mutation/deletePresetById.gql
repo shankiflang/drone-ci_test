@@ -1,0 +1,5 @@
+mutation DeletePresetById($id: ID!) {
+	delete_presets_item(id: $id) {
+		id
+	}
+}

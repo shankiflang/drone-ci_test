@@ -1,0 +1,13 @@
+query getPresetsByUsersId($filter: directus_presets_filter!) {
+	presets(filter: $filter) {
+		id
+		filter
+		user {
+			id
+		}
+		search
+		collection
+		layout_query
+		layout_options
+	}
+}

@@ -1,0 +1,2 @@
+const operationsSchema = "id,name,key,position_x,position_y,options,resolve { id } ,reject { id } ,flow { id } ,date_created,user_created { id email provider status } ";
+export default operationsSchema;

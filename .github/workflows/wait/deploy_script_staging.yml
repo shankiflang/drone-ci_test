@@ -1,0 +1,57 @@
+name: Run script to staging
+
+on:
+  pull_request:
+    branches:
+      - staging
+    types: [closed]
+    paths:
+      - "directus/scripts/**"
+
+jobs:
+  Install:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: Download script cache
+        uses: actions/cache@v3
+        id: script-cache
+        with:
+          path: |
+            ${{ github.workspace }}/directus/scripts/node_modules
+          key: ${{ runner.os }}-script-${{ hashFiles('directus/script/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-script-
+      - name: Use Node.js 16
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Install packages
+        working-directory: directus/scripts
+        run: yarn --frozen-lockfile
+
+  Run_script:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    container:
+      image: node:16
+    env:
+      ADMIN_STAGING_URL: ${{ secrets.ADMIN_STAGING_URL }}
+      ADMIN_STAGING_TOKEN: ${{ secrets.ADMIN_STAGING_TOKEN }}
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: Download script cache
+        uses: actions/cache@v3
+        id: script-cache
+        with:
+          path: |
+            ${{ github.workspace }}/directus/scripts/node_modules
+          key: ${{ runner.os }}-script-${{ hashFiles('directus/script/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-script-
+      - name: Deploying code
+        working-directory: directus/scripts
+        run: yarn import-prod

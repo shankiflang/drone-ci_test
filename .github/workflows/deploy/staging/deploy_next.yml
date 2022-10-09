@@ -1,0 +1,16 @@
+name: Deploy Next to staging
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    env:
+      ARGOCD_URL: ${{ secrets.ARGOCD_URL }}
+      ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+    steps:
+      - name: Getting argoCD
+        run: |
+          curl -sSL -o /usr/local/bin/argocd https://${ARGOCD_URL}/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+      - name: Getting argoCD
+        run: |
+          argocd app actions run ${{ github.event.repository.name }}-staging restart --kind Deployment --resource-name staging-next

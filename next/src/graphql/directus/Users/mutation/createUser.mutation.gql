@@ -1,0 +1,21 @@
+mutation CreateUser($data: create_directus_users_input!) {
+	create_users_item(data: $data) {
+		id
+		...NameParts
+		email
+				status
+		provider
+		avatar {
+			id
+			...ImageParts
+		},
+		location,
+		title,
+		status,
+		theme,
+		tfa_secret,
+		role {
+			...RoleParts
+		},
+	}
+}

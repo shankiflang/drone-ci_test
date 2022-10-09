@@ -1,0 +1,4 @@
+fragment NameParts on directus_users {
+    first_name
+    last_name
+}

@@ -1,0 +1,2 @@
+const commentsSchema = "article_id { id } ,comment,date_created,date_updated,id,sort,status,user_created { id email provider status } ,user_updated { id email provider status } ,likes { id } ";
+export default commentsSchema;

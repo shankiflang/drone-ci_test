@@ -1,0 +1,22 @@
+query GetUsers($filter: directus_users_filter!) {
+	users(filter: $filter) {
+		id
+		...NameParts
+		email
+				status
+		provider
+		avatar {
+			id
+			...ImageParts
+		},
+		location,
+		title,
+		status,
+		theme,
+		tfa_secret,
+		code,
+		role {
+			...RoleParts
+		},
+	}
+}
