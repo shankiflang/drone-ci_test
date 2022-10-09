@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "NODE_EXTRA_CA_CERTS=~/ca/ca.pem next dev -H 0.0.0.0",
-    "build": "next build",
+    "build": "NODE_EXTRA_CA_CERTS=~/ca/ca.pem next build",
+    "build-prod": "next build",
     "start": "NODE_EXTRA_CA_CERTS=~/ca/ca.pem next start -H 0.0.0.0",
     "lint": "next lint",
     "codegen": "NODE_EXTRA_CA_CERTS=~/ca/ca.pem node ./scripts/codegen/ && graphql-codegen --config codegen.yml",
