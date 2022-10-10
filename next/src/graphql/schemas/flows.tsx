@@ -1,0 +1,2 @@
+const flowsSchema = "id,name,icon,color,description,status,trigger,accountability,options,operation { id } ,date_created,user_created { id email provider status } ,operations { id } ";
+export default flowsSchema;

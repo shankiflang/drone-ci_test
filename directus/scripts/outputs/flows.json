@@ -1,0 +1,25 @@
+[
+    {
+        "id": "d4a7374f-29ed-4d4e-83c2-599489bbb5ae",
+        "name": "test",
+        "icon": "bolt",
+        "color": null,
+        "description": null,
+        "status": "active",
+        "trigger": "event",
+        "accountability": "all",
+        "options": {
+            "type": "filter",
+            "scope": [
+                "items.delete"
+            ],
+            "collections": [
+                "directus_files"
+            ]
+        },
+        "operation": "13696b71-ef9b-497f-be65-28d52750267e",
+        "date_created": "2022-09-23T12:12:49.444Z",
+        "user_created": null,
+        "operations": []
+    }
+]

@@ -1,0 +1,5 @@
+mutation DeleteUserItem($id: ID!) {
+	delete_users_item(id: $id) {
+		id
+	}
+}

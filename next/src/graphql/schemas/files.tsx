@@ -1,0 +1,2 @@
+const filesSchema = "id,storage,filename_disk,filename_download,title,folder { id } ,uploaded_by { id email provider status } ,uploaded_on,modified_by { id email provider status } ,modified_on,charset,filesize,width,height,duration,embed,description,location,tags,metadata";
+export default filesSchema;

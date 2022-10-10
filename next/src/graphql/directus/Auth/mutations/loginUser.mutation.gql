@@ -1,0 +1,6 @@
+mutation LoginUser($email: String!, $password: String!, $otp: String) {
+    auth_login(email: $email, password: $password, otp: $otp, mode: cookie) {
+        access_token
+        refresh_token
+    }
+}

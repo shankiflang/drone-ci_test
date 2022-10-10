@@ -1,0 +1,10 @@
+query getFileById($id: ID!) {
+	files_by_id(id: $id) {
+		id
+		...ImageParts
+		filename_download
+		storage
+		uploaded_on
+		description
+	}
+}

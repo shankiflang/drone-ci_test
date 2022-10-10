@@ -1,0 +1,72 @@
+name: Deploy to production
+
+on:
+  pull_request:
+    branches:
+      - production
+    types: [closed]
+    paths:
+      - "next/**"
+      - "docker/prod/next/Dockerfile"
+
+jobs:
+  Install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: Use Node.js 16
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Download scripts cache
+        uses: actions/cache@v3
+        id: scripts-cache
+        with:
+          path: |
+            ${{ github.workspace }}/directus/scripts/node_modules
+          key: ${{ runner.os }}-scripts-${{ hashFiles('directus/scripts/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-scripts-
+      - name: Install packages
+        working-directory: directus/scripts
+        run: yarn --frozen-lockfile
+
+  Import:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    concurrency: production
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: Use Node.js 16
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Download scripts cache
+        uses: actions/cache@v3
+        id: scripts-cache
+        with:
+          path: |
+            ${{ github.workspace }}/directus/scripts/node_modules
+          key: ${{ runner.os }}-scripts-${{ hashFiles('directus/scripts/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-scripts-
+      - name: Running yarn directus-import
+        working-directory: directus/scripts
+        env:
+          ADMIN_URL: ${{ secrets.ADMIN_URL }}
+        run: yarn import-prod
+
+  Deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged
+    environment:
+      name: production
+      url: https://natiq.fr
+    concurrency: production
+    container:
+      image: node:16
+    steps:
+      - name: Deploying code
+        run: echo "Deploying Next to production"

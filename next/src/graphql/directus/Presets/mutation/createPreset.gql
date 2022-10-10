@@ -1,0 +1,13 @@
+mutation CreatePreset($data: create_directus_presets_input!) {
+	create_presets_item(data: $data) {
+		id
+		filter
+		user {
+			id
+		}
+		search
+		collection
+		layout_query
+		layout_options
+	}
+}

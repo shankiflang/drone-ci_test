@@ -1,0 +1,7 @@
+query GetRelation($collection: String!, $field: String!) {
+    relations_by_name(collection: $collection, field: $field) {
+		collection
+		field
+		related_collection
+    }
+}

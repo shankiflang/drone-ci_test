@@ -1,0 +1,21 @@
+query GetUserById($id: ID!) {
+	users_by_id(id: $id) {
+		id
+		...NameParts
+		email
+				status
+		provider
+		avatar {
+			id
+			...ImageParts
+		},
+		location,
+		title,
+		status,
+		theme,
+		tfa_secret,
+		role {
+			...RoleParts
+		},
+	}
+}

@@ -1,0 +1,2 @@
+const presetsSchema = "id,bookmark,user { id email provider status } ,role { id } ,collection,search,layout,layout_query,layout_options,refresh_interval,filter,icon,color";
+export default presetsSchema;

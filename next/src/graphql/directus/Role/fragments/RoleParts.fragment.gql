@@ -1,0 +1,8 @@
+fragment RoleParts on directus_roles {
+    id,
+    name,
+    enforce_tfa,
+    admin_access,
+    app_access,
+    icon
+}

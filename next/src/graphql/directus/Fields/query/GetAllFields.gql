@@ -1,0 +1,20 @@
+query GetAllFields {
+    fields {
+        collection
+        field
+        type
+        meta {
+            interface
+            options
+            required
+            readonly
+            translations
+        }
+        schema {
+            name
+            foreign_key_table
+            max_length
+            default_value
+        }
+    }
+}

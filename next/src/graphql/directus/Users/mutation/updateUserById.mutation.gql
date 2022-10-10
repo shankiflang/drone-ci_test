@@ -1,0 +1,21 @@
+mutation UpdateUserById($id: ID!, $data: update_directus_users_input!) {
+	update_users_item(id: $id, data: $data) {
+		id
+		...NameParts
+		email
+				status
+		provider
+		avatar {
+			id
+			...ImageParts
+		},
+		location,
+		title,
+		status,
+		theme,
+		tfa_secret,
+		role {
+			...RoleParts
+		},
+	}
+}

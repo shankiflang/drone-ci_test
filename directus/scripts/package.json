@@ -1,0 +1,19 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "export": "NODE_EXTRA_CA_CERTS=~/ca/ca.pem node export.js",
+    "import": "NODE_EXTRA_CA_CERTS=~/ca/ca.pem node import.js",
+    "import-prod": "node import.js"
+  },
+  "dependencies": {
+    "async": "^3.2.4",
+    "axios": "^0.27.2",
+    "chalk": "^5.0.1",
+    "dotenv": "^16.0.2",
+    "form-data": "^4.0.0",
+    "nested-property": "^4.0.0"
+  }
+}

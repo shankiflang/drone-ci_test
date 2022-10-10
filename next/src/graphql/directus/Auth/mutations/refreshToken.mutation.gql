@@ -1,0 +1,6 @@
+mutation RefreshToken {
+    auth_refresh(mode: cookie) {
+        access_token
+        refresh_token
+    }
+}

@@ -1,0 +1,2 @@
+const usersSchema = "id,first_name,last_name,email,password,location,title,description,tags,avatar { id modified_on type title storage filename_download uploaded_on } ,language,theme,tfa_secret,status,role { id } ,token,last_access,last_page,provider,external_identifier,auth_data,email_notifications,code,likes { id } ";
+export default usersSchema;

@@ -1,0 +1,13 @@
+mutation UpdatePresetById($id: ID!, $data: update_directus_presets_input!) {
+	update_presets_item(id: $id, data: $data) {
+		id
+		filter
+		user {
+			id
+		}
+		search
+		collection
+		layout_query
+		layout_options
+	}
+}

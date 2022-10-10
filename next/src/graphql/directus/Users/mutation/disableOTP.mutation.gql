@@ -1,0 +1,3 @@
+mutation disableOTP($otp: String!) {
+	users_me_tfa_disable(otp: $otp)
+}

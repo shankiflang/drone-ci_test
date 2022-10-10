@@ -1,0 +1,11 @@
+query GetAllRelations {
+    relations {
+		collection
+		field
+		related_collection
+        meta {
+            one_field
+            many_collection
+        }
+    }
+}

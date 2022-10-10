@@ -1,0 +1,7 @@
+fragment FileParts on directus_files {
+    type
+    title
+    type
+    filename_download
+    description
+}

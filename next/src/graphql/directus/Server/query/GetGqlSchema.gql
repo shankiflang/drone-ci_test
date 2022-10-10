@@ -1,0 +1,3 @@
+query GetGqlSchema($scope: graphql_sdl_scope) {
+    server_specs_graphql(scope: $scope)
+}

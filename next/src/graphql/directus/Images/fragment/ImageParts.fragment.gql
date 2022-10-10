@@ -1,0 +1,5 @@
+fragment ImageParts on directus_files {
+    modified_on
+    type
+    title
+}

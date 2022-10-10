@@ -1,0 +1,28 @@
+query GetCurrentUser {
+	users_me {
+		id
+		...NameParts
+		email
+				status
+		provider
+		avatar {
+			id
+			...ImageParts
+		},
+		location,
+		title,
+		status,
+		theme,
+		tfa_secret,
+		role {
+			...RoleParts
+		},
+		code,
+		likes {
+			id
+			comment {
+				id
+			}
+		}
+	}
+}

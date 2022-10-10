@@ -1,0 +1,2 @@
+const panelsSchema = "id,dashboard { id } ,name,icon,color,show_header,note,position_x,position_y,width,height,options,date_created,user_created { id email provider status } ";
+export default panelsSchema;

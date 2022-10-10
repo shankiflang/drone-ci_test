@@ -6,7 +6,7 @@ on:
       - develop
     paths:
       - "next/**"
-      - "docker/prod/next/Dockerfile"
+      - "docker/next/prod/Dockerfile"
 
 jobs:
   Install:
@@ -24,12 +24,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Use Node.js 16
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v1
         with:
           node-version: 16
       - name: Install packages
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         working-directory: next
         run: yarn --frozen-lockfile
 
@@ -53,19 +51,17 @@ jobs:
         id: build-cache
         with:
           path: |
-            ${{ github.workspace }}/next/.next/cache
+            ${{ github.workspace }}/next/.next/
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
       - name: Use Node.js 16
-        if: steps.build-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v1
         with:
           node-version: 16
       - name: Build code
-        if: steps.build-cache.outputs.cache-hit != 'true'
         working-directory: next
-        run: yarn build
+        run: yarn build-prod
 
   Push:
     runs-on: ubuntu-latest
@@ -87,7 +83,7 @@ jobs:
         id: build-cache
         with:
           path: |
-            ${{ github.workspace }}/next/.next/cache
+            ${{ github.workspace }}/next/.next/
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
@@ -108,4 +104,4 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ github.event.repository.name }}:dev
           context: next
-          file: docker/prod/next/Dockerfile
+          file: docker/next/prod/Dockerfile
