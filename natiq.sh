@@ -19,7 +19,7 @@ trap_ctrlc() {
                         (cd next && yarn run codegen)
                         printf "\r\033[1;32m%s\033[0m\n" "Exporting Codegen ✅"
                         yes '' | head -n1
-                        docker-compose run --rm directus npx directus schema snapshot --yes //directus//snapshots//snapshot.yaml
+                        docker-compose run --rm directus npx directus schema snapshot --yes //directus//snapshot//snapshot.yaml
                         printf "\r\033[1;32m%s\033[0m\n" "Exporting Snapshot ✅"
                         yes '' | head -n1
                         break
@@ -241,7 +241,7 @@ ImportSnapshot()
     -----------------------------------------------
     "
     docker-compose run --rm directus npx directus bootstrap
-    docker-compose run --rm directus npx directus schema apply --yes //directus//snapshots//snapshot.yaml
+    docker-compose run --rm directus npx directus schema apply --yes //directus//snapshot//snapshot.yaml
     docker-compose up directus -d --wait
     yes '' | head -n1
 }
